@@ -43,7 +43,7 @@ $myArts = dbQueryArticles();
 <body>
 	<?php include 'include/a_nav.php' ?>
 	<?php include "include/modalSelTime.php" ?>
-	
+	<?php include "include/modalDel.php" ?>
 	<div class="container">	
 <!-- buttons -->
 		<div class="row">
@@ -83,8 +83,9 @@ $myArts = dbQueryArticles();
 			<thead class="thead-light">
 				<tr>
 				<th class="p-1" data-field="id" data-width="" data-width-unit="%" data-visible="false"></th>
-				<th class="p-1" data-field="idx_no" data-width="20" data-width-unit="%" data-halign="center" data-align="left" data-sortable="true">发票号</th>	
-				<th class="p-1" data-field="idx_date" data-width="20" data-width-unit="%" data-halign="center" data-align="center" data-sortable="true">发票时间</th>
+				<th class="p-1" data-field="idx_no" data-width="10" data-width-unit="%" data-halign="center" data-align="left" data-sortable="true">发票号</th>	
+				<th class="p-1" data-field="idx_date" data-width="10" data-width-unit="%" data-halign="center" data-align="center" data-sortable="true">发票时间</th>
+				<th class="p-1" data-field="idx_paidDatum" data-width="20" data-width-unit="%" data-halign="center" data-align="center" data-sortable="true">付款时间</th>
 				<th class="p-1" data-field="idx_sup" data-width="40" data-width-unit="%" data-halign="center" data-sortable="true">厂家</th>	
 				<th class="p-1" data-field="idx_count" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">件数</th>
 				<th class="p-1" data-field="idx_total" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">金额</th>
@@ -211,20 +212,34 @@ $myArts = dbQueryArticles();
 				</div>
 				<button type="button" class="ml-1 btn btn-primary" style="font-size:14px;" id="mdpBtnCal" onclick="mdpCalSum()">总计</button>
 				<input type="number" style="font-size:14px;" class="form-control" name="mdp_total" id="mdp_total" readonly>
-				<div class="form-check ml-3 pt-2">
-					<input class="form-check-input" type="radio" value="1" name="isPayed" id="mdp_isPayed">
-					<label class="form-check-label" for="mdp_isPayed">
+			</div>
+		</div>
+
+
+
+		<div class="row">
+			<div class="input-group p-1">
+			<div class="form-check ml-3 pt-2">
+					<input class="form-check-input" type="radio" value="1" name="isPayed" id="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+					<label class="form-check-label" for="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
 						已付
 					</label>
 				</div>
 				<div class="form-check ml-3 pt-2">
-					<input class="form-check-input" type="radio" value="0" name="isPayed" id="mdp_isNotPayed">
-					<label class="form-check-label" for="mdp_isNotPayed">
+					<input class="form-check-input" type="radio" value="0" name="isPayed" id="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
+					<label class="form-check-label" for="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
 						未付
 					</label>
 				</div>
+				<div class="input-group-prepend ml-2"><span class="input-group-text" style="font-size:14px;">付款时间</span></div>
+				<input type="date" class="form-control" style="font-size:14px;" id="mdp_paidDatum" name="mdp_paidDatum" value="">
 			</div>
 		</div>
+
+
+
+
+
 		</div>
 		<hr>
 		<div class="container">
@@ -247,6 +262,7 @@ $myArts = dbQueryArticles();
 <script src="js/ajax.js"></script>
 <script src="js/autocomplete.js"></script>
 <script src="js/modalSelTime.js?202106212113"></script>
+<script src="js/modalDel.js?<?= rand() ?>"></script>
 
 <script>
 var company = <?php echo json_encode($myCompany) ?>;
@@ -360,6 +376,7 @@ function loadTable(){
 			id: purs[i]['f_id'],
 			idx_no: purs[i]['p_id'],
 			idx_date: purs[i]['date'].substring(0,10),
+			idx_paidDatum: purs[i]['paidDatum'],
 			idx_sup: purs[i]['s_name'],
 			idx_count: purs[i]['count_sum'],
 			idx_total: purs[i]['total_sum']
@@ -398,7 +415,6 @@ function searchPurs(){
 	link += "&s_pay="+sPay;
 	if (sId != "")
 		link += "&s_id="+sId;
-	console.log(link);
 	getRequest(link, searchPursYes, searchPursNo);
 }
 /*************************************************** 
@@ -465,9 +481,9 @@ function newPur() {
 	mdTax = 0;
 	mdDisplayCal();
 	mdDisplaySum();
-
+	
 	document.getElementById("mdp_isPayed").checked = true;
-
+	document.getElementById("mdp_paidDatum").value = currentDate(2);
 	$modalPur.modal();
 }
 function setDateMax() {
@@ -641,8 +657,15 @@ function mdSelPay(e) {
 	}
 }
 // delete item
+var del_id = "";
 function mdpDelItem(e) {
-	var id = $(e).attr("id");
+	$modalPur.modal("toggle");
+	del_id = $(e).attr("id");
+	showDelModal(mdpDelItem_2, $modalPur);
+}
+function mdpDelItem_2(){
+	//var id = $(e).attr("id");
+	var id = del_id;
 	id = id.replace("btnDelItem","");
 	for (var i=0; i<myPurItemCount; i++) {
 		if (myPurItems[i]['id'] == id) { 
@@ -654,6 +677,7 @@ function mdpDelItem(e) {
 	}	
 	$tablePur.bootstrapTable('removeByUniqueId', id);
 	mdDisplaySum();	
+	$modalPur.modal("toggle");
 }
 // save purchase
 function mdpDone() {
@@ -698,7 +722,11 @@ function mdpDone() {
 	myPur['payment'] = mdPay.toFixed(2);
 
 	myPur['isPayed'] = 0;
-	if(document.getElementById("mdp_isPayed").checked == true) myPur['isPayed'] = 1;
+	myPur['paidDatum'] = "";
+	if(document.getElementById("mdp_isPayed").checked == true){
+		myPur['isPayed'] = 1;
+		myPur['paidDatum'] = document.getElementById("mdp_paidDatum").value;
+	}
 
 	if (purType == 1) {
 		var form = new FormData();
@@ -706,7 +734,7 @@ function mdpDone() {
 		postRequest("postAPurDel.php", form, dbDelPurYes, dbDelPurNo);
 	} else {
 		dbAddPur();
-	}	
+	}
 }
 // database actions
 function dbDelPurYes(result) {
@@ -792,8 +820,14 @@ function queryPurItemsYes(result) {
 	document.getElementById("mdp_s_name").value = getSupNameById(myPur['s_id']);
 	document.getElementById("mdp_p_id").value = myPur['p_id'];
 	document.getElementById("mdp_date").value = convertDate(myPur['date'], 1);	
-	if(myPur['isPayed'] == 1) document.getElementById("mdp_isPayed").checked = true;
-	else document.getElementById("mdp_isNotPayed").checked = true;
+	if(myPur['isPayed'] == 1){
+		document.getElementById("mdp_paidDatum").value = myPur['paidDatum'];
+		document.getElementById("mdp_isPayed").checked = true;
+	}
+	else{
+		document.getElementById("mdp_isNotPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = "";	
+	}
 	setDateMax();
 	resetItemInput();
 	
@@ -836,12 +870,19 @@ function queryPurItemsNo(result) {
 	EXPORT
 ****************************************************/
 function exportFile() {
-	var output = "Rechnung Nr.,Datum Rechnung,Steuergrundlage,MwSt,Gesamtbetrag,Firma\n";
+	var output = "Rechnung Nr.,Datum Rechnung,Datum Zahlung,Steuergrundlage,MwSt,Menge,Gesamtbetrag,Firma\n";
 	for (var i=0; i<purCount; i++) {
+
+		var paidDatum = purs[i]['paidDatum'];
+		if(paidDatum !== null && paidDatum != "" ) paidDatum = convertDate(purs[i]['paidDatum'].substring(0,10));
+		else paidDatum = "-";
+
 		output += purs[i]['p_id']+',';
 		output += convertDate(purs[i]['date'].substring(0,10))+',';
+		output += paidDatum+',';
 		output += purs[i]['total_sum']+',';
 		output += ',';
+		output += purs[i]['count_sum']+',';
 		output += purs[i]['total_sum']+',';
 		output += purs[i]['s_name']+'\n';
 	}
@@ -877,23 +918,30 @@ function printFile() {
 	output += '<tr style="font-size:12px;">';
 	output += '<th align="center" style="border-left:1px solid;">Rechnung Nr.</th>';
 	output += '<th align="center" style="border-left:1px solid;">Datum<br>Rechnung</th>';
+	output += '<th align="center" style="border-left:1px solid;">Datum<br>Zahlung</th>';
 	output += '<th align="left" style="border-left:1px solid;">Steuergrundlage</th>';
 	output += '<th align="left" style="border-left:1px solid;">MwSt</th>';
+	output += '<th align="left" style="border-left:1px solid;">Menge</th>';
 	output += '<th align="left" style="border-left:1px solid;">Gesamtbetrag</th>';
 	output += '<th align="left" style="border-left:1px solid;">Firma</th>';
 	output += '</tr></thead><tbody>';
 	for (var i=0; i<purCount; i++) {
+		var paidDatum = purs[i]['paidDatum'];
+		if(paidDatum !== null && paidDatum != "" ) paidDatum = convertDate(purs[i]['paidDatum'].substring(0,10));
+		else paidDatum = "-";
 		output += '<tr style="font-size:12px;">';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+purs[i]['p_id']+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+convertDate(purs[i]['date'].substring(0,10))+'</td>';
+		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+paidDatum+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+'&nbsp;'+purs[i]['total_sum']+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right"></td>';
+		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+'&nbsp;'+purs[i]['count_sum']+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+'&nbsp;'+purs[i]['total_sum']+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+purs[i]['s_name']+'</td>';
 		output += '</tr>';
 	}
 	output += '<tr style="font-size:12px;">';
-	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" colspan="2">Gesamtsumme&nbsp;</td>';
+	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" colspan="4">Gesamtsumme&nbsp;</td>';
 	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+costTotal.toFixed(2)+'</td>';
 	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right"></td>';
 	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+costTotal.toFixed(2)+'</td>';

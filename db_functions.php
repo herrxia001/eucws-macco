@@ -642,6 +642,15 @@ function dbQueryAllSuppliers()
 	return $thisQuery;	
 }
 
+function dbQueryAllName(){
+	$thisDb = new myDatabase($_SESSION['uDb']);
+	$sqlQuery = "SELECT DISTINCT(i_name) FROM inventory WHERE i_name IS NOT NULL AND i_name != '' ORDER BY i_name ASC";
+    $thisQuery = $thisDb->dbQuery($sqlQuery);
+	$thisDb->dbClose();
+	
+	return $thisQuery;
+}
+
 function dbQuerySupplier($sId)
 {
 	$thisDb = new myDatabase($_SESSION['uDb']);
@@ -828,6 +837,14 @@ writeLog("MERGE ORDER: ".$sqlInsert);
 	}
 			
 	for ($i=0; $i<count($oldorders); $i++) {
+
+		$sql = "INSERT INTO orders_del SELECT * FROM orders WHERE o_id = '".$oldorders[$i]['o_id']."'";
+		$thisDb->dbUpdate($sql);
+		$sql = "INSERT INTO order_items_del SELECT * FROM order_items WHERE o_id = '".$oldorders[$i]['o_id']."'";
+		$thisDb->dbUpdate($sql);
+		$sql = "INSERT INTO order_variant_del SELECT * FROM order_variant WHERE o_id = '".$oldorders[$i]['o_id']."'";
+		$thisDb->dbUpdate($sql);
+
 		$sqlDel = "DELETE FROM orders WHERE o_id='".$oldorders[$i]['o_id']."'";
 		$thisDb->dbUpdate($sqlDel);
 	}
@@ -961,6 +978,14 @@ function dbDelOrder($order, $orderitems, $ordervariants)
 		return FALSE;
 
 	$thisDb = new myDatabase($_SESSION['uDb']);
+
+	$sql = "INSERT INTO orders_del SELECT * FROM orders WHERE o_id = '".$order['o_id']."'";
+	$thisDb->dbUpdate($sql);
+	$sql = "INSERT INTO order_items_del SELECT * FROM order_items WHERE o_id = '".$order['o_id']."'";
+	$thisDb->dbUpdate($sql);
+	$sql = "INSERT INTO order_variant_del SELECT * FROM order_variant WHERE o_id = '".$order['o_id']."'";
+	$thisDb->dbUpdate($sql);
+
 	// order_items and order_variant are deleted by DB trigger
 	$sqlDel = "DELETE FROM orders WHERE o_id='".$order['o_id']."'";
 	$result = $thisDb->dbUpdate($sqlDel);
@@ -1039,6 +1064,14 @@ function dbUpdateOrder($order) {
 		$sqlSet = $sqlSet.",".$thisColumns[$i]."='".$order[$thisColumns[$i]]."'";
 	$sqlUpdate = "UPDATE orders SET ".$sqlSet." WHERE o_id ='".$oId."'";	
 	$result = $thisDb->dbUpdate($sqlUpdate);
+
+	if($order['isPayed'] == "-1") $order['isPayed'] = 0;
+	else if($order['isPayed'] == "") $order['isPayed'] = 1;
+	if($order['isPayed'] == 0) $order['paidDatum'] = "";
+	else $order['paidDatum'] = date("Y-m-d");
+	$sqlUpdate = "UPDATE orders SET isPayed = '".$order['isPayed']."', paidDatum = '".$order['paidDatum']."' WHERE o_id ='".$oId."'"; 
+	$result = $thisDb->dbUpdate($sqlUpdate);
+
 	$thisDb->dbClose();
 	
 	return $result;
@@ -1363,7 +1396,13 @@ function dbHeaderPurchase($pur)
 		return FALSE;
 
 	$thisDb = new myDatabase($_SESSION['uDb']);
-	$sqlUpdate = "UPDATE purchase SET p_code='".$pur['p_code']."', s_id='".$pur['s_id']."', note='".$pur['note']."', unpaid='".$pur['unpaid'].
+
+	if($pur['isPayed'] == "-1") $pur['isPayed'] = 0;
+	else if($pur['isPayed'] == "") $pur['isPayed'] = 1;
+	if($pur['isPayed'] == 0) $pur['paidDatum'] = "";
+	else $pur['paidDatum'] = date("Y-m-d");
+
+	$sqlUpdate = "UPDATE purchase SET isPayed='".$pur['isPayed']."', paidDatum='".$pur['paidDatum']."', p_code='".$pur['p_code']."', s_id='".$pur['s_id']."', note='".$pur['note']."', unpaid='".$pur['unpaid'].
 					"' WHERE p_id='".$pur['p_id']."'";
 	
 	$result = $thisDb->dbUpdate($sqlUpdate);
@@ -1379,7 +1418,7 @@ function dbUpdatePurchase($pur)
 		return FALSE;
 
 	$thisDb = new myDatabase($_SESSION['uDb']);
-	$sqlUpdate = "UPDATE purchase SET count_sum='".$pur['count_sum']."', cost_sum='".$pur['cost_sum']."' WHERE p_id='".$pur['p_id']."'";
+	$sqlUpdate = "UPDATE purchase SET count_sum='".$pur['count_sum']."', cost_sum='".$pur['cost_sum']."', discount='".$pur['discount']."',fee='".$pur['fee']."',total_sum='".$pur['total_sum']."' WHERE p_id='".$pur['p_id']."'";
 	
 	$result = $thisDb->dbUpdate($sqlUpdate);
 	$thisDb->dbClose();
@@ -2412,12 +2451,40 @@ function dbAppUsersUpdate($id, $company)
 	if ($kId <= 0) {
 		return -1;
 	}
+	$token = "";
+	if($company['status'] == 1) $token = uniqid();
 	$sql = "UPDATE app_company 
-			SET status='".$company['status']."', message='".$company['msg']."', time_updated='".date('Y-m-d H:i:s')."', k_id='".$kId.
+			SET status='".$company['status']."', token = '".$token."', message='".$company['msg']."', time_updated='".date('Y-m-d H:i:s')."', k_id='".$kId.
 			"' WHERE apc_id='".$id."'";
     $result = $thisDb->dbUpdate($sql);
 	$thisDb->dbClose();
 	
+	return $result;	
+}
+
+/****update order payed */
+function dbUpdateOrderGroupPay($o_id, $isPayed){
+	$thisDb = new myDatabase($_SESSION['uDb']);
+	if($isPayed == 0){
+		$sql = "UPDATE orders SET isPayed = 0, paidDatum = '' WHERE o_id IN (".$o_id.")";
+	}else{
+		$sql = "UPDATE orders SET isPayed = 1, paidDatum = '".date("Y-m-d")."' WHERE o_id IN (".$o_id.")";
+	}
+	$result = $thisDb->dbUpdate($sql);
+	$thisDb->dbClose();
+	return $result;	
+}
+
+/****update order payed */
+function dbUpdatePurGroupPay($pid, $isPayed){
+	$thisDb = new myDatabase($_SESSION['uDb']);
+	if($isPayed == 0){
+		$sql = "UPDATE purchase SET isPayed = 0, paidDatum = '' WHERE p_id IN (".$pid.")";
+	}else{
+		$sql = "UPDATE purchase SET isPayed = 1, paidDatum = '".date("Y-m-d")."' WHERE p_id IN (".$pid.")";
+	}
+	$result = $thisDb->dbUpdate($sql);
+	$thisDb->dbClose();
 	return $result;	
 }
 
@@ -2468,7 +2535,7 @@ function dbAppRptGetSales($timefrom, $timeto) {
 	$thisDb = new myDatabase($_SESSION['uDb']);	
 	$sqlQuery = 
 			"SELECT DATE(date) AS dateonly, SUM(total_sum) as value FROM orders
-				WHERE total_sum>0 AND date>='".$timefrom." 00:00:00' AND date<='".$timeto." 23:59:59' 
+				WHERE status >= 10 AND total_sum>0 AND date>='".$timefrom." 00:00:00' AND date<='".$timeto." 23:59:59' 
 				GROUP BY dateonly ORDER BY dateonly ASC";
 	$result = $thisDb->dbQuery($sqlQuery);
 	$thisDb->dbClose();

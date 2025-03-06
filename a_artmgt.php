@@ -50,6 +50,7 @@ $thisResource = new myResource($_SESSION['uLanguage']);
 					<th class="p-1" data-field="id" data-width-unit="%" data-visible="false"></th>			
 					<th class="p-1" data-field="idx_data" data-halign="center" >商品</th>
 					<th class="p-1" data-field="idx_count" data-halign="center" data-align="right">库存</th>
+                        <!--th class="p-1" data-field="idx_countnianbao" data-halign="center" data-align="right">库存(年报)</th-->
 					<th class="p-1" data-field="idx_cost" data-halign="center" data-align="right">单位成本</th>
 					<th class="p-1" data-field="idx_total" data-halign="center" data-align="right">库存金额</th>
 					</tr>
@@ -82,7 +83,7 @@ $thisResource = new myResource($_SESSION['uLanguage']);
 					</div>
 					<div class="input-group p-1">
 						<div class="input-group-prepend"><span class="input-group-text" style="width:120px;">库存</span></div>
-						<input type="number" min="0" step="0.01" class="form-control" name="mda_count" id="mda_count">		
+						<input type="number" min="0" step="0.01" class="form-control" name="mda_count" id="mda_count" readonly>
 					</div>
 					<div class="input-group p-1">
 						<div class="input-group-prepend"><span class="input-group-text" style="width:120px;">单位成本</span></div>
@@ -151,7 +152,7 @@ function searchArtsNo(result) {
 }
 
 function searchArts() {
-	getRequest("getArts.php", searchArtsYes, searchArtsNo);
+	getRequest("getArts_2.php", searchArtsYes, searchArtsNo);
 }
 
 function displaySum(){
@@ -172,6 +173,7 @@ function loadTableFinal(){
 			id: 			invs[i]['a_id'],
 			idx_data: 		invs[i]['a_name'],
 			idx_count: 		invs[i]['count'],
+            //idx_countnianbao: 		invs[i]['count_nianbao'],
 			idx_cost: 		invs[i]['cost'],
 			idx_total: 		invs[i]['subtotal']
 		});

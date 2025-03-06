@@ -18,13 +18,17 @@ function mkInit(customer) {
 			document.getElementById("mk_"+mkColumns[i]).value = mk_customer[mkColumns[i]];
 		}
 		mkCode = mk_customer['k_code'];
-		document.getElementById("mk_autocode").style.display = "none";
+		document.getElementById("mk_autocode").innerHTML = "💻";
+		document.getElementById("mk_k_code").readOnly = false;
+		//document.getElementById("mk_autocode").style.display = "none";
 	} else {
 		for (i=0; i<mkColumnTotal; i++) {
 			document.getElementById("mk_"+mkColumns[i]).value ="";
 		}
 		mkAutoCode = true;
-		document.getElementById("mk_autocode").style.display = "block";
+		document.getElementById("mk_autocode").innerHTML = '&#9998';
+		document.getElementById("mk_k_code").readOnly = true;
+		//document.getElementById("mk_autocode").style.display = "block";
 		mkAutoCust();
 	}
 }

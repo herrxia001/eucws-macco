@@ -1,0 +1,22 @@
+<?php
+/*****************************************************************************
+	File:		postOrderGroupPay.php
+
+*****************************************************************************/
+
+session_start();
+if(!$_SESSION['uId'])
+	header("Location:index.php");
+
+include_once 'db_functions.php';
+
+if(!isset($_POST['isPayed']) || !isset($_POST['o_id']) ) {
+	echo json_encode("NO");
+	return;
+}
+
+$result = dbUpdateOrderGroupPay($_POST['o_id'], $_POST['isPayed']);
+if(!$result)
+	echo json_encode("NO");
+else
+	echo json_encode("OK");

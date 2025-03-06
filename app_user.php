@@ -19,7 +19,7 @@ $thisResource = new myResource();
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="zh">
 <head>
     <?php include 'include/header.php' ?>
 	<title>APP Product Management</title>
@@ -74,10 +74,11 @@ $thisResource = new myResource();
 				<thead class="thead-light">
 					<tr>
 					<th class="p-1" data-field="id" data-width="0" data-width-unit="%" data-visible="false"></th>									
-					<th class="p-1" data-field="idx_name" data-width="45" data-width-unit="%" data-sortable="true"><?php echo $thisResource->comCustomer ?></th>
+					<th class="p-1" data-field="idx_name" data-width="25" data-width-unit="%" data-sortable="true"><?php echo $thisResource->comCustomer ?></th>
 					<th class="p-1" data-field="idx_time" data-width="25" data-width-unit="%" data-sortable="true"><?php echo $thisResource->comTime ?></th>
 					<th class="p-1" data-field="idx_post" data-width="15" data-width-unit="%" data-sortable="true"><?php echo $thisResource->comPost ?></th>
 					<th class="p-1" data-field="idx_status" data-width="15" data-width-unit="%" data-sortable="true"><?php echo $thisResource->appStatus ?></th>
+					<!--th class="p-1" data-field="idx_url" data-width="20" data-width-unit="%" data-sortable="true">链接</th-->
 					</tr>
 				</thead>
 				<tbody>
@@ -178,6 +179,12 @@ $thisResource = new myResource();
 		<div class="input-group p-1"> 
 			<div class="input-group-prepend"><span class="input-group-text" style="width:100px;"><?php echo $thisResource->comRemark ?></span></div>
 			<textarea class="form-control" id="m_memo" style="background-color:white" readonly rows="4"></textarea>
+		</div>
+<!-- url -->
+		<div class="input-group p-1" style="display: none;"> 
+			<div class="input-group-prepend"><span class="input-group-text" style="width:100px;">链接</span></div>
+			<!-- input type="text" class="form-control" id="m_url" style="background-color:white" readonly -->
+			<a id="m_url" style="padding: 10px;"></a>
 		</div>
 <!-- foot -->
 		<div class="row">
@@ -335,6 +342,10 @@ function loadTable(){
 	var rows = []; 	
 	for(var i=0; i<users.length; i++){
 		users[i]['status_str'] = getStatusNameById(users[i]['status']);
+		var url = "";
+		if(users[i]['status'] == 1){
+			users[i]['url'] = "https://www.shop-reho.com/?token="+users[i]['token'];
+		}
 		if (myStatus != "-1" && users[i]['status'] != myStatus)
 			continue;	
 		rows.push({
@@ -342,7 +353,8 @@ function loadTable(){
 			idx_name: users[i]['apc_name'],
 			idx_time: users[i]['time_created'].substr(0, 10),
 			idx_post: users[i]['post'],
-			idx_status: users[i]['status_str']
+			idx_status: users[i]['status_str'],
+			idx_url: users[i]['url']
 		});
 		countTotal++;
 	}
@@ -401,6 +413,8 @@ function viewUser() {
 	document.getElementById("m_whatsapp").value = selectedUser['whatsapp'];
 	document.getElementById("m_tel").value = selectedUser['cell'];
 	document.getElementById("m_memo").value = selectedUser['memo'];
+	document.getElementById("m_url").text = selectedUser['url'];
+	document.getElementById("m_url").href = selectedUser['url'];
 	if (selectedUser['status'] == "0") {
 		document.getElementById("btnMessage").style.display = "none";
 		document.getElementById("btnReject").style.display = "inline";

@@ -1,5 +1,5 @@
 var modalDel = $("#modalDelete");
-var functionDone;
+var functionDone, target_modal;
 function delItemModal(){
     if(document.getElementById("pwd").value == ""){
         alert("请输入密码");
@@ -15,10 +15,12 @@ function delItemModal(){
 
 function cancelDel() {
 	modalDel.modal("toggle");
+    if(target_modal != null) target_modal.modal("toggle");
 }
-function showDelModal(delfunc){
+function showDelModal(delfunc, t_modal = null){
     modalDel.modal();
     functionDone = delfunc;
+    target_modal = t_modal;
 }
 
 

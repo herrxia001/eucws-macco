@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 ?>
 
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 <head>
     <?php include 'include/header.php' ?>	
 	<title>EUIMS - Invoice</title>
@@ -67,6 +67,77 @@ body {
 	<?php include "include/modalCust.php" ?>
 	<?php include "include/modalCustSearch.php" ?>
 	<?php include "include/modalDel.php" ?>
+
+	<!-- Modal: barcode input -->
+<div class="modal fade" id="modalBarcode" tabindex="-1" role="dialog"
+	data-backdrop="static" data-keyboard="false" style="padding:1">
+	<div class="modal-dialog" style="width:95%; height:100%; margin:1">
+		<div class="modal-content" style="height:95%;">
+		<div id="bcModalBody" class="modal-body" style="overflow-y: auto">
+		<audio id="playBeepYes" src="beepYes.mp3" type="audio/mp3" style="display: none;"></audio>
+		<audio id="playBeepNo" src="beepNo.mp3" type="audio/mp3" style="display: none;"></audio>
+<!-- top menu -->		
+		<div class="row">
+			<div class="p-1 col-7" align="left">
+				<button style="float: left;" type="button" class="mr-1 btn btn-success" onclick="startscann('qr-reader')"><span class='fa fa-camera'></span></button>
+				<label id="mdbcTitle" class="ml-2 mt-2" style="font-weight: bold"></label>
+			</div>
+			<div class="p-1 col-5" align="right">
+				<button type="button" class="btn btn-secondary" onclick="bcCancel()"><span class='fa fa-times'></span></button>
+				<button type="button" class="btn btn-primary" style="width:40px" onclick="bcDone()"><span class='fa fa-check'></span></button>
+			</div>
+		</div>
+            <div id="qr-reader" style="width: 100%;"></div>
+		<div class="row">
+			<hr style="border:1px solid lightgrey; margin:1px; width:100%">
+		</div>
+		<div class="row">
+			<div class="col p-1" align="center">
+				<label id="bcScanInfo">请扫描条码</label>
+			</div>
+		</div>
+		<div class="row">
+			<hr style="border:1px solid lightgrey; margin:2px; width:100%">
+		</div>
+		<div class="container" id="bcBody">
+			
+		</div>
+		<div class="row">
+			<div class="p-1 col-7" align="left">
+				<button type="button" class="mr-1 btn btn-success" onclick="startscann('qr-reader')"><span class='fa fa-camera'></span></button>
+				<label id="mdbcTitle1" class="ml-2 mt-2" style="font-weight: bold"></label>
+			</div>
+			<div class="p-1 col-5" align="right">
+				<button type="button" class="btn btn-secondary" onclick="bcCancel()"><span class='fa fa-times'></span></button>
+				<button type="button" class="btn btn-primary" style="width:40px" onclick="bcDone()"><span class='fa fa-check'></span></button> 
+			</div>
+		</div>
+		</div>
+		</div>
+	</div>
+</div> <!-- End of Modal: barcode input -->
+
+
+<!-- Modal: barcode input -->
+<div class="modal fade" id="modalBcInput" tabindex="-1" role="dialog">	
+	<div class="modal-dialog modal-sm modal-dialog-centered">
+		<div class="modal-content">
+		<div class="modal-body">
+			<div class="row p-1">
+				<input type="number" class="form-control" name="bc_edit_amount" id="bc_input_amount">
+			</div>
+			<div class="row p-1">
+			<div class="col" align="center">
+				<button type="button" class="btn btn-outline-secondary" onclick="bcCancelInputAmount()"><span class='fa fa-times'></span></button>
+				<button type="button" class="ml-5 btn btn-outline-secondary" onclick="bcDoneInputAmount()"><span class='fa fa-check'></span></button>
+			</div>
+			</div>
+		</div>
+		</div>
+	</div>
+</div> <!-- End of Modal: barcode input -->
+
+
 	<form action="" method="post">
 	<div class="container">		
 <!-- order data header -->			
@@ -80,17 +151,16 @@ body {
 			<button type="button" class="ml-1 btn btn-secondary" id="btnSrchCust" onclick="searchCust()">搜索</button>
 			<button type="button" class="ml-1 btn btn-secondary" id="btnShowCust" onclick="showCust()">查看</button>
 		</div>
-		<div class="p-1 col-12 col-sm-12 col-md-12 col-lg-4" align="right">
+		<div class="p-1 col-12 col-sm-12 col-md-12 col-lg-6" align="right">
 			<button type="button" class="btn btn-danger" id="btnVoid" onclick="voidOrder()">作废</button>
 			<button type="button" class="btn btn-danger" id="btnDestroy" onclick="destroyOrder()">删除</button>
 			<button type="button" class="btn btn-secondary" id="btnOptions" onclick="showOptions()">选项</button>		
 			<button type="button" class="btn btn-success" id="btnPrint" onclick="printOrder()">打印</button>
 			<button type="button" class="btn btn-success" id="btnERechnung" onclick="eRechnungOrder()">下载</button>
 			<button type="button" class="btn btn-primary" id="btnSave" onclick="submitOrder()">保存</button>		
-		</div>
-		<div class="p-1 col-12 col-sm-12 col-md-12 col-lg-2" align="right">
 			<button type="button" class="btn btn-secondary" id="btnClose" onclick="closeOrder()">关闭</button>
-			<button type="button" class="btn btn-secondary" id="btnNew" onclick="newItem()">加货</button>			
+			<button type="button" class="btn btn-secondary" id="btnNew" onclick="newItem()">加货</button>
+			<button type="button" class="btn btn-primary" id="btnBarcode" onclick="showBarcode()" style=""><span class="fa fa-barcode"></span></button>			
 		</div>
 	</div>
 <!-- order items -->
@@ -418,18 +488,22 @@ body {
 				<input type="text" class="form-control" name="mp_pays_due" id="mp_pays_due" readonly>
 			</div>	
 			<div class="row">
-				<div class="form-check ml-4 pt-2">
-					<input class="form-check-input" type="radio" value="1" name="isPayed" id="mdp_isPayed">
-					<label class="form-check-label" for="mdp_isPayed">
-						已付
-					</label>
-				</div>
-				<div class="form-check ml-4 pt-2">
-						<input class="form-check-input" type="radio" value="0" name="isPayed" id="mdp_isNotPayed">
-						<label class="form-check-label" for="mdp_isNotPayed">
+				<div class="input-group p-1">
+					<div class="form-check ml-4 pt-2">
+						<input class="form-check-input" type="radio" value="1" name="isPayed" id="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+						<label class="form-check-label" for="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+							已付
+						</label>
+					</div>
+					<div class="form-check ml-4 pt-2">
+						<input class="form-check-input" type="radio" value="0" name="isPayed" id="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
+						<label class="form-check-label" for="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
 							未付
 						</label>
 					</div>
+					<div class="input-group-prepend ml-2"><span class="input-group-text" style="font-size:14px;">付款时间</span></div>
+					<input type="date" class="form-control" style="font-size:14px;" id="mdp_paidDatum" name="mdp_paidDatum" value="">
+				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
@@ -535,11 +609,10 @@ body {
 <script src="js/modalCust.js?<?= rand ?>"></script>
 <script src="js/aOptions.js?<?= rand ?>"></script>
 <script src="js/qrcode.js"></script>
-
+<script src="js/html5-qrcode.min.js?<?= rand ?>"></script>
 <script src="js/modalDel.js"></script>
 
 <script>
-
 var rId;
 var myCustomer = new Object();
 var company = <?php echo json_encode($myCompany) ?>;
@@ -630,6 +703,10 @@ function searchCodeYes(invs) {
 	thisItem['a_name'] = invs['a_name'];
 	document.getElementById("mdn_a_name").value = invs['t_name'];
 	document.getElementById("mdn_discount").value = "";
+	if( document.getElementById("mdn_count").value == "") document.getElementById("mdn_count").value = 1;
+	/*else document.getElementById("mdn_count").value = document.getElementById("mdn_count").value + 1;
+	if(document.getElementById("mdn_code").value != "" && document.getElementById("mdn_code").value != invs['i_code']) document.getElementById("mdn_count").value = 1;
+	document.getElementById("mdn_code").value = invs['i_code'];*/
 	refreshSale_2();
 }
 
@@ -821,8 +898,592 @@ function getItemIndexById(id) {
 /************************************************************************
 	NEW ITEM
 ************************************************************************/
+// barcode input //
+var mdbcCode1 = "";
+var keytime = 0;
+var bcInv = null;
+
+var bcList = [];
+var bcCount = 0, bcValue = 0;
+$modalBarcode = $('#modalBarcode');
+var bcBody = document.getElementById("bcBody");
+var bcRecordHeight;
+
+document.getElementById("modalBarcode").addEventListener('keydown', function(e) {
+	if (e.keyCode == 13){ 
+		e.preventDefault();
+		if (mdbcCode1.length < 2)
+			return;
+		queryItembyBarcode(mdbcCode1);
+		mdbcCode1 = "";;
+		return;
+	} 
+	var d = new Date();
+	var t = d.getTime(); 
+	if ((t - keytime) > 100)
+		mdbcCode1 = e.key;
+	else
+		mdbcCode1 += e.key;
+	keytime = t;
+});
+
+var html5QrcodeScanner;
+var is_on = 0;
+var is_scann= 0;
+
+function onScanSuccess(decodedText, decodedResult) {
+	if(is_scann == 1){
+		queryItembyBarcode(decodedText);
+		is_scann = 0;
+		setTimeout(
+			function() {
+				is_scann = 1;
+		}, 3000);
+
+	}
+    //console.log('Code scanned = ${decodedText}', decodedResult);
+    //html5QrcodeScanner.clear();
+	//is_on = 0;
+    //html5QrcodeScanner.stop();
+}
+
+function startscann(obj){
+	if (is_on == 0) {
+		html5QrcodeScanner = new Html5QrcodeScanner(obj, { fps: 5, qrbox: 250 });
+		html5QrcodeScanner.render(onScanSuccess);
+		//html5QrcodeScanner.start();
+		is_on = 1;
+		is_scann = 1;
+		//html5QrcodeScanner.scanFile();
+		//https://blog.minhazav.dev/QR-and-barcode-scanner-using-html-and-javascript/
+	}else{
+		html5QrcodeScanner.clear();
+		//html5QrcodeScanner.stop();
+		is_on = 0;
+		is_scann= 0;
+	}
+}
+function stopscann(){
+    html5QrcodeScanner.clear();
+    //html5QrcodeScanner.stop();
+	is_on = 0;
+	is_scann= 0;
+    document.getElementById("bcScanInfo").innerText = "";
+}
+
+// show modalBarcode
+function showBarcode() {
+	mdbcClearAll();
+	document.getElementById("bcScanInfo").innerText = "请扫码条码";
+	$modalBarcode.modal();
+	bcDisplaySum();
+}
+// clear all elements
+function mdbcClearAll() {
+	bcList = [];
+	var parent = document.getElementById("bcBody")
+	while (parent.firstChild) {
+		parent.firstChild.remove();
+	}
+	mdbcCode1 = "";
+	bcCount = 0;
+	bcValue = 0;
+}
+// display summary
+function bcDisplaySum() {
+	bcCount = 0;
+	bcValue = 0;
+	for (var i=0; i<bcList.length; i++) {
+		bcCount += bcList[i]['count'];
+		bcValue += parseFloat(bcList[i]['price'])*bcList[i]['count'];
+	}
+	var sumStr =  "货品: " + bcList.length  + "  " + "件数: " + bcCount.toString() + "  " + "金额: " + bcValue.toFixed(2);
+	document.getElementById("mdbcTitle").innerHTML = sumStr;
+	document.getElementById("mdbcTitle1").innerHTML = sumStr;
+}
+
+// query record by barcode
+function queryItembyBarcode(code1) { 
+	if (code1 == "")
+		return false;
+	var ok = -1;
+	for (var i=0; i<a_ivariants.length; i++) {
+		if (a_ivariants[i]['barcode'] == null && a_ivariants[i]['code1'] == code1) {
+			ok = i;
+			break;
+		}
+		if (a_ivariants[i]['barcode'] == code1) {
+			ok = i;
+			break;
+		}
+	}
+	if (ok >= 0) {
+		bcInv = a_ivariants[ok];
+		bcUpdateList();
+		document.getElementById("bcScanInfo").style.color = "white";
+		document.getElementById("bcScanInfo").style.backgroundColor = "green";
+		document.getElementById("bcScanInfo").innerText = "条码有效";
+		playBeep(1);
+	} else {
+		document.getElementById("bcScanInfo").style.color = "white";
+		document.getElementById("bcScanInfo").style.backgroundColor = "red";
+		document.getElementById("bcScanInfo").innerText = "条码错误";
+		playBeep(0);
+	}		
+}
+// play beep
+function playBeep(option) {
+	if (option == 0)
+		beep(400,300,100,'square'); //document.getElementById('playBeepNo').play();
+	else
+		beep(400,600,100,'sine'); //document.getElementById('playBeepYes').play();
+}
+const myAudioContext = new AudioContext();
+function beep(duration, frequency, volume, style){
+    return new Promise((resolve, reject) => {
+        // Set default duration if not provided
+        duration = duration || 200;
+        frequency = frequency || 440;
+        volume = volume || 100;
+
+        try{
+            let oscillatorNode = myAudioContext.createOscillator();
+            let gainNode = myAudioContext.createGain();
+            oscillatorNode.connect(gainNode);
+
+            // Set the oscillator frequency in hertz
+            oscillatorNode.frequency.value = frequency;
+
+            // Set the type of oscillator
+            oscillatorNode.type= style;
+            gainNode.connect(myAudioContext.destination);
+
+            // Set the gain to the volume
+            gainNode.gain.value = volume * 0.01;
+
+            // Start audio with the desired duration
+            oscillatorNode.start(myAudioContext.currentTime);
+            oscillatorNode.stop(myAudioContext.currentTime + duration * 0.001);
+
+            // Resolve the promise when the sound is finished
+            oscillatorNode.onended = () => {
+                resolve();
+            };
+        }catch(error){
+            reject(error);
+        }
+    });
+}
+// update list
+function bcUpdateList() {
+	var listItem = findArray(bcList, "i_id", bcInv['i_id']);
+	if (listItem == null) {
+		bcCreateRecord();
+		bcScrollBottom();
+	}
+	else {
+		if (bcInv['variant'] != null) {
+			var listSubItem = findArray(listItem['subitems'], "iv_id", bcInv['iv_id']); 
+			if (listSubItem == null) {
+				bcCreateSub(listItem);
+				bcScrollBottom();
+			} else {
+				bcUpdateSub(listSubItem, 1);
+			}
+		} else {
+			var listSubItem = listItem['subitems'][0];
+			bcUpdateSub(listSubItem, 1);
+		}
+		bcUpdateRecord(listItem);
+	}
+	bcDisplaySum();
+}
+// scroll body to bottom
+function bcScrollBottom() {
+	var bcModalBody = document.getElementById("bcModalBody");
+//	bcModalBody.scrollTop += bcRecordHeight;
+	bcModalBody.scrollTop = bcModalBody.scrollHeight - bcModalBody.clientHeight;
+}
+function bcUpdateRecord(listItem) {
+	var count = 0;
+	for (var i=0; i<listItem['subitems'].length; i++) {
+		count += listItem['subitems'][i]['amount'];
+	}
+	listItem['count'] = count;
+	var id = "bc_count_"+listItem['i_id'];	
+	document.getElementById(id).innerText = count;	
+}
+// create record
+function bcCreateRecord() {
+	// col
+	var col = document.createElement("div");
+	col.classList.add("col");
+	col.classList.add("p-1");
+	bcBody.appendChild(col);
+	// row
+	var row = document.createElement("div");
+	row.classList.add("row");	
+	col.appendChild(row);
+	// col1 - ArtNr
+	var col1 = document.createElement("div");
+	col1.classList.add("col-6");
+	row.appendChild(col1);
+	var artNo = document.createElement("label"); 
+	if(bcInv['discount'] !== null && bcInv['discount'] > 0)
+		artNo.innerText = bcInv['i_code'] + " (促销)";
+	else
+		artNo.innerText = bcInv['i_code'];
+	col1.appendChild(artNo);
+	// col4 - price
+	var col4 = document.createElement("div");
+	col4.classList.add("col-3");
+	col4.align = "right";
+	row.appendChild(col4);
+	var price = document.createElement("label");
+	if(bcInv['discount'] !== null && bcInv['discount'] > 0)
+    	price.innerHTML = "<a style='text-decoration-line: line-through;'>"+bcInv['price']+"</a> " + ((bcInv['price'] * bcInv['discount'])/100).toFixed(2)+"&euro;";
+	else
+		price.innerHTML = bcInv['price']+"&euro;";
+	col4.appendChild(price);
+	// col3 - count
+	var col3 = document.createElement("div");
+	col3.classList.add("col-3");
+	col3.align = "right";
+	row.appendChild(col3);
+	var count = document.createElement("label");
+	count.id = "bc_count_"+bcInv['i_id'];
+	count.style.fontWeight = "bold";
+	count.style.color = "green";
+	count.innerText = "1";
+	col3.appendChild(count);
+	var unit = document.createElement("label");
+	unit.style.fontSize = "x-small"; 
+	unit.innerHTML = "&nbsp;x" + bcInv['unit'];
+	col3.appendChild(unit);
+	// hr
+	bcCreateHr(col);
+	// add new list item
+	var listItem = new Object();
+	listItem['inv'] = bcInv;
+	listItem['col'] = col;
+	listItem['row'] = row;
+	listItem['i_id'] = bcInv['i_id'];
+	listItem['price'] = bcInv['price'];
+	if(bcInv['discount'] !== null && bcInv['discount'] > 0)
+		listItem['discount'] = bcInv['discount'];
+	listItem['count'] = 1;	
+	var listSubItems = new Array();
+	listItem['subitems'] = listSubItems;
+	// create sub record
+	bcCreateSub(listItem);	
+	// add item to list
+	bcList.push(listItem);
+	bcCount++;
+}
+// create hr
+function bcCreateHr(col) {
+	var rowHr = document.createElement("div");
+	rowHr.classList.add("row");
+	col.appendChild(rowHr);
+	var hr = document.createElement("hr");
+	hr.style = "border:1px solid lightgrey; margin:2px; width:100%";
+	rowHr.appendChild(hr);
+}
+// create sub record
+function bcCreateSub(listItem) {
+	var option = 0;
+	if (bcInv['variant'] != null)
+		option = 1;
+	col = listItem['col'];
+	// row
+	var row = document.createElement("div");
+	row.classList.add("row");
+	col.appendChild(row);
+	// colImg
+	var colImg = document.createElement("div");
+	colImg.classList.add("col-2");
+	colImg.classList.add("p-1");
+	row.appendChild(colImg);
+	var img = document.createElement("img");
+	img.width="60";
+	img.height="60";
+	img.style="object-fit: cover";
+	var imgNo = null;
+	if (option == 0)
+		imgNo = bcInv['m_no'];
+	else
+		imgNo = bcInv['im_no'];
+	if (imgNo == null) 
+		img.src = "blank.jpg";
+	else
+		img.src = bcInv['path']+"/"+bcInv['i_id']+"_"+imgNo+".jpg";
+	colImg.appendChild(img);
+	// colVariant
+	var colVar = document.createElement("div");
+	colVar.classList.add("col-4");
+	colVar.classList.add("p-1");
+	colVar.classList.add("align-self-center");
+	colVar.align = "center";
+	row.appendChild(colVar);
+	var vart = document.createElement("label");
+	vart.style.textAlign = "center";
+	if(bcInv['size'] == null) bcInv['size'] = "";
+	if (option == 0) {
+		if (bcInv['color'] != null)
+			vart.innerText = bcInv['color'];
+		else
+			vart.innerText = "";
+	}
+	else
+		vart.innerText = bcInv['variant']+" "+bcInv['size'];
+	colVar.appendChild(vart);
+	// colCount
+	var colCount = document.createElement("div");
+	colCount.classList.add("col-6");
+	colCount.classList.add("p-1");
+	colCount.align = "right";
+	row.appendChild(colCount);
+	// button minus
+	var btnMinus = document.createElement("label");
+	btnMinus.style.fontSize = "36px";
+	if (option == 0) 
+		btnMinus.id = "bc_minus_"+bcInv['i_id']+"_0";
+	else
+		btnMinus.id = "bc_minus_"+bcInv['i_id']+"_"+bcInv['iv_id'];
+	btnMinus.innerHTML = "&nbsp;&minus;&nbsp;";
+	btnMinus.addEventListener("click", bcMinus);
+	colCount.appendChild(btnMinus);
+	// count
+	var count = document.createElement("label");
+	count.style.fontSize = "36px";
+	count.style.width = "50px";
+	count.style.textAlign = "center";
+	if (option == 0) 
+		count.id = "bc_amount_"+bcInv['i_id']+"_0";
+	else
+		count.id = "bc_amount_"+bcInv['i_id']+"_"+bcInv['iv_id'];
+	count.innerText = "1";	
+	count.addEventListener("click", bcShowInput);
+	colCount.appendChild(count);
+	// button add
+	var btnAdd = document.createElement("label");
+	btnAdd.style.fontSize = "36px";
+	if (option == 0) 
+		btnAdd.id = "bc_add_"+bcInv['i_id']+"_0";
+	else
+		btnAdd.id = "bc_add_"+bcInv['i_id']+"_"+bcInv['iv_id'];
+	btnAdd.innerHTML = "&nbsp;&plus;&nbsp;";
+	btnAdd.addEventListener("click", bcAdd);
+	colCount.appendChild(btnAdd);
+	// hr
+	bcCreateHr(col);
+	// list sub item
+	var listSubItem = new Object();
+	listSubItem['row'] = row;
+	listSubItem['i_id'] = listItem['i_id'];
+	if (option == 0)
+		listSubItem['iv_id'] = "0";
+	else
+		listSubItem['iv_id'] = bcInv['iv_id'];
+	listSubItem['amount'] = 1;
+	listItem['subitems'].push(listSubItem);
+	// record height
+	if (option == 0) {
+		var rect = col.getBoundingClientRect(); 
+		bcRecordHeight = rect.height;
+	}	
+}
+// show input amount
+var bcIMItem, bcIMSubItem;
+$modalBcInput = $('#modalBcInput');
+$modalBcInput.on('shown.bs.modal', function () {
+	$("#bc_input_amount").trigger('focus');
+})
+function bcShowInput(e) {
+	var id = e.target.id;
+	var index = id.replace("bc_amount_", "");
+	var delim = index.indexOf("_");
+	var thisIId = index.substr(0, delim);
+	var thisIvId = index.substr(delim+1);
+	bcIMItem = findArray(bcList, "i_id", thisIId); 
+	bcIMSubItem = findArray(bcIMItem["subitems"], "iv_id", thisIvId); 
+	document.getElementById("bc_input_amount").value = "";
+	$modalBcInput.modal();
+	$modalBcInput.focus();
+}
+function bcCancelInputAmount() {	
+	$modalBcInput.modal("toggle");
+	$modalBarcode.focus();
+}
+function bcDoneInputAmount() {
+	var amount = document.getElementById("bc_input_amount").value;
+	$modalBcInput.modal("toggle");
+	$modalBarcode.focus();
+	if (amount == "")
+		return;
+	bcUpdateSub(bcIMSubItem, 0, parseInt(amount));
+	bcUpdateRecord(bcIMItem);
+	bcDisplaySum();
+}
+// add amount
+function bcAdd(e) {
+	var id = e.target.id;
+	var index = id.replace("bc_add_", "");
+	var delim = index.indexOf("_");
+	var thisIId = index.substr(0, delim);
+	var thisIvId = index.substr(delim+1); 
+	var listItem = findArray(bcList, "i_id", thisIId); 
+	var subItem = findArray(listItem["subitems"], "iv_id", thisIvId);
+	bcUpdateSub(subItem, 1);
+	bcUpdateRecord(listItem);
+	bcDisplaySum();
+}
+// minus amount
+function bcMinus(e) {
+	var id = e.target.id;
+	var index = id.replace("bc_minus_", "");
+	var delim = index.indexOf("_");
+	var thisIId = index.substr(0, delim);
+	var thisIvId = index.substr(delim+1);	
+	var listItem = findArray(bcList, "i_id", thisIId);
+	var subItem = findArray(listItem["subitems"], "iv_id", thisIvId);
+	bcUpdateSub(subItem, -1);
+	bcUpdateRecord(listItem);
+	bcDisplaySum();
+}
+// update sub record
+function bcUpdateSub(listSubItem, op, value) {
+	if (op == 0)
+		listSubItem['amount'] = value;
+	else if (op > 0)
+		listSubItem['amount']++;
+	else {
+		listSubItem['amount']--;
+	}
+	var id = "bc_amount_"+listSubItem['i_id']+"_"+listSubItem['iv_id']; 
+	document.getElementById(id).innerText = listSubItem['amount'].toString();
+}
+// close modal
+function bcCancel() {
+	if (bcList.length > 0) {
+		if (!confirm("数据尚未保存，确定退出?"))
+			return;
+	}
+	$modalBarcode.modal("toggle");
+    stopscann();
+}
+function bcDone() {
+	if (bcList.length > 0)
+		bcSave();
+	$modalBarcode.modal("toggle");
+    stopscann();
+}
+// save item
+function bcSave() {
+
+
+
+	var index = -1;
+	for (var i=0; i<bcList.length; i++) {
+		if (bcList[i]['count'] <= 0)
+			continue;
+
+		var code = bcList[i]['inv']['i_code'];
+		var count = bcList[i]['count'];
+		var price = bcList[i]['price'];	
+		var discount = 0;
+
+		var calcPrice = price;
+		var priceStr = price;
+		if(discount > 0){
+			calcPrice = (((100-discount) * price) /100).toFixed(2);
+			priceStr = "<a style='text-decoration-line: line-through;'>"+price+"</a> "+calcPrice;
+		}
+		var ivar = findArray(a_ivariants, "i_code", code);
+		if (ivar != null){
+			thisItem['i_id'] = ivar['i_id'];
+			thisItem['path'] = ivar['path'];
+			thisItem['m_no'] = ivar['m_no'];
+			thisItem['i_code'] = ivar['i_code'];
+			thisItem['i_name'] = ivar['i_name'];
+			thisItem['ai_code'] = ivar['ai_code'];
+			thisItem['a_name'] = ivar['i_name'];
+		}else{
+			alert("没找到名称!");
+			return;
+		}
+		var name = thisItem['a_name'];	
+		
+		// Get a_id
+		for (var i_art_tmp=0; i_art_tmp<myArts.length; i_art_tmp++) {
+			if (myArts[i_art_tmp]['a_name'] == ivar['t_name']) {
+				var aid = myArts[i_art_tmp]['a_id'];
+				var cost = myArts[i_art_tmp]['cost'];
+				break;
+			}
+		}
+
+		// Init new item
+		thisItem['id'] = itemIdCount;
+		thisItem['r_id'] = rId;
+		thisItem['ai_code'] = code;
+		thisItem['ai_id'] = itemIdCount;
+		thisItem['a_name'] = name;
+		thisItem['a_id'] = aid;
+		//thisItem['i_id'] = "0";
+		thisItem['count'] = count;
+		thisItem['cost'] = cost;
+		thisItem['price'] = price;
+		thisItem['discount'] = discount;
+		thisItem['unit'] = "1";
+		thisItem['real_count'] = count;
+		var subtotal = parseInt(count)*parseFloat(calcPrice);
+		thisItem['subtotal'] = subtotal.toFixed(2);
+		// Add new item to orderItems
+		orderItems[itemCount] = thisItem;
+		// Add new row
+		var rows = [];
+		var imgStr = "";
+		if (thisItem['i_id'] != "0") {
+			var imgSrc = thisItem['path']+"/"+thisItem['i_id']+"_"+thisItem['m_no']+"_s.jpg";
+			imgStr = "<img width='40' height='60' style='border:1px dotted; object-fit: cover' src='"+imgSrc+"' >";
+		}
+		rows.push({
+			id: thisItem['id'],
+			idx_image: imgStr,
+			idx_code: thisItem['ai_code'],
+			idx_name: thisItem['a_name'],
+			idx_count: thisItem['count'],
+			idx_price: priceStr,
+			idx_subtotal: thisItem['subtotal']
+		});	
+		$table.bootstrapTable('append', rows);
+		// Recalculate summary
+		var countSum = parseInt(order['count_sum']) + parseInt(thisItem['count']); 
+		var priceSum = parseFloat(order['price_sum']) + subtotal;
+		order['count_sum'] = countSum.toString();
+		order['price_sum'] = priceSum.toFixed(2);
+		displaySum();
+		// Increase counts
+		itemCount++;
+		itemIdCount++;
+		// Update database
+		addDbItem(thisItem);
+	}
+}
+//--------------------//
+
+
+
+
+
+
+
+
+
 $modalNewItem.on('shown.bs.modal', function () {
 	  $('#mdn_name').trigger('focus');
+	  mdbcCode1 = "";
 })
 function selArt(e) {
 	var x = $(e).text();
@@ -1338,8 +1999,14 @@ function displayPay() {
 	document.getElementById("mp_total").value = order['net'];
 	document.getElementById("mp_pays_total").value = pays_total.toFixed(2);
 	document.getElementById("mp_pays_due").value = pays_due.toFixed(2);
-	if(order['isPayed'] == 1) document.getElementById("mdp_isPayed").checked = true;
-	else document.getElementById("mdp_isNotPayed").checked = true;
+	if(order['isPayed'] == 1){
+		document.getElementById("mdp_isPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = order['paidDatum'];
+	}
+	else {
+		document.getElementById("mdp_isNotPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = "";
+	}
 }
 // Show modalOrderPay
 function showPay() {
@@ -1432,10 +2099,12 @@ function donePay() {
 	}
 	order['due'] = pays_due.toFixed(2);
 	$modalOrderPay.modal("toggle");
-
 	order['isPayed'] = 0;
-	if(document.getElementById("mdp_isPayed").checked == true) order['isPayed'] = 1;
-
+	order['paidDatum'] = "";
+	if(document.getElementById("mdp_isPayed").checked == true){
+		order['isPayed'] = 1;
+		order['paidDatum'] = document.getElementById("mdp_paidDatum").value;
+	}
 	displaySum();
 }
 /************************************************************************
@@ -1828,6 +2497,11 @@ function getInNoYes(result) {
 	
 	printInvoice();
 }
+function getInNoNo(result) {
+	document.getElementById("btnPrint").disabled = false;
+	document.getElementById("btnSave").disabled = false;
+	alert("获取发票号出现错误, 请稍后再试");
+}
 function getInNoYes_Erechnung(result){
 	document.getElementById("btnPrint").disabled = false;
 	document.getElementById("btnSave").disabled = false;
@@ -1860,11 +2534,6 @@ function eRechnungOrder(){
 	}
 	else
 		printInvoiceErechnung();
-}
-function getInNoNo(result) {
-	document.getElementById("btnPrint").disabled = false;
-	document.getElementById("btnSave").disabled = false;
-	alert("获取发票号出现错误, 请稍后再试");
 }
 function printOrder() {
 	if (itemCount <= 0) {
@@ -1914,7 +2583,7 @@ function printInvoiceErechnung(){
 	output += company["post"] + ' ' + company["city"] +' ';
 	output += company["country"]+' ';
 	output += 'Geschäftsführer: ' + company["geschaeftsfuehrer"]+' ';
-	output += 'Handelsregisternummer: ' + company["hrb"];
+	output += 'Handelsregisternummer: ' + company["hrb"]+' ';
 	//Geschäftsführer: Hans Muster
     //Handelsregisternummer: H A 123
     output += '</ram:Content>';
@@ -2128,7 +2797,8 @@ if (notZero(order['fee1'])) {
     a.click();
     window.URL.revokeObjectURL(url);
     a.remove();
-}	
+}
+	
 /* PRINT */
 function printInvoice() {
 	var i = 0;
@@ -2280,7 +2950,7 @@ function printInvoice() {
 	output += '<table width="100%" border="0" cellpadding="5" cellspacing="0">';
 	// Left
 	output += '<tr>';
-	output += '<td width="50%"><table width="100%" style="border:1px solid #808080;" cellpadding="5" cellspacing="0">';
+	output += '<td width="50%" valign="top"><table width="100%" style="border:1px solid #808080;" cellpadding="5" cellspacing="0">';
 	// Tax
 	var tax = (parseFloat(order['total_sum'])*parseFloat(order['tax_rate'])/100+0.0000001).toFixed(2);	
 	output += '<tr align="right" style="font-size:12px">';
@@ -2333,7 +3003,7 @@ function printInvoice() {
 	}
 	output += '</table></td>';
 	// Right
-	output += '<td width="50%"><table width="100%" style="border:1px solid #808080;" cellpadding="5" cellspacing="0">';	
+	output += '<td width="50%" valign="top"><table width="100%" style="min-height: 74px; border:1px solid #808080;" cellpadding="5" cellspacing="0">';	
 	// Discount
 	if (notZero(order['discount_rate'])) {
 		var discount = (parseFloat(order['price_sum'])*parseFloat(order['discount_rate'])/100).toFixed(2);
@@ -2380,7 +3050,7 @@ function printInvoice() {
 	output += '<tr style="font-size:14px;">';
 	output += '<td style="padding:1px;" align="right"><b>Total MwSt.:</b></td><td style="padding:1px;" align="right">'+tax+'&nbsp;&nbsp;</td>';
 	output += '<tr style="font-size:14px;">';
-	output += '<td style="padding:1px;" align="right"><b>Total (inkl. MwSt):</b></td><td style="padding:1px;" align="right"><b>'+order['net']+'&nbsp;&nbsp;</b></td>';
+	output += '<td style="padding:1px;" align="right"><b>Total (inkl. MwSt):</b></td><td style="padding:1px;" align="right"><b style="font-size: 1.5rem;">'+order['net']+'&nbsp;&nbsp;</b></td>';
 	output += '</tr>';
 	
 	output += '</table></td>';
@@ -2453,7 +3123,7 @@ function printInvoice() {
 		output += '<hr>';
 		output += '<a style="font-size:12px;">(Mitgliedstaat und Ort, wohin der Liefergegenstands im Rahmen einer Beförderung order Versendung gelangt ist)</a><br><br><br>';
 		output += 'erhalten habe / gelangt ist.';
-		output += '<br><br><br><br><br>';
+		output += '<br><br><br><br>';
 		output += '<a style="font-size:12px;">(Unterschrift des Abnehmers oder seines Vertretungsberechtigen sowie Name des Unterzeichnenden in Druckschrift)</a><br><br>';
 		printout += output;
 	}

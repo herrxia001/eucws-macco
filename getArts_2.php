@@ -1,44 +1,33 @@
 <?php
-/****************************************************************************************************
-	File:		aGetReports.php
-
-****************************************************************************************************/
+/* 	
+	File:		getArts.php
+	Purpose: 	Query all articles.
+	Return: 	All articles.
+*/
 session_start();
 if(!$_SESSION['uId'])
-	header("Location:alogin.php");
+	header("Location:index.php");
 
 include_once 'db_invoice.php';
 
-if(!isset($_GET['timefrom']) || !isset($_GET['timeto'])){
-	echo json_encode("NO");
-	return;
-}
-
-$timeFrom = $_GET['timefrom'];
-$timeTo = $_GET['timeto'];
-
-$arts = dbRptQueryArts();
-if ($arts <= 0) {
-	echo json_encode("NO");
-	return;
-}
-
+$inv = dbQueryArticles();
 // refresh current from last year nianbao //
-if(is_array($arts)){
+if(is_array($inv)){
 	$thisDb = new myDatabase($_SESSION['uDb']);
-	for($i = 0; $i < count($arts); $i++){
-		$a_id = $arts[$i]['a_id'];
+	for($i = 0; $i < count($inv); $i++){
+		$a_id = $inv[$i]['a_id'];
 		$sql = "SELECT * FROM a_art_hist WHERE a_id = '".$a_id."' AND month = 0 ORDER BY year DESC LIMIT 1";
 		$result = $thisDb->dbQuery($sql);
 		if($result <= 0){
 			$count = 0;
-			$arts[$i]['count'] = "0";
-			$year = date("Y")-2;
+			//$inv[$i]['count'] = "0";
+			$year = date("Y") - 2;
 		}else{
 			$count = intval($result[0]['count']) - intval($result[0]['dep_count']);
-			$arts[$i]['count'] = $count;
+			//$inv[$i]['count'] = $count;
 			$year = $result[0]['year'];
 		}
+
 
 		$sql = "SELECT a.a_id, SUM(ai.count) AS count_sale, SUM(ai.count*ai.price) as total_sale
 		FROM a_art AS a, a_in_items AS ai, a_invoice AS an 
@@ -46,10 +35,13 @@ if(is_array($arts)){
 			"GROUP BY a.a_id ORDER By a.a_id ASC";
 		$result_2 = $thisDb->dbQuery($sql);
 		if($result_2 <= 0){
-			//$arts[$i]['count'] = $count;
+			//$inv[$i]['count'] = $count;
 		}else{
 			$count -= $result_2[0]['count_sale'];
 		}
+
+		
+
 
 
 		$sql = "SELECT a.a_id, SUM(pi.count) AS count_pur, SUM(pi.count*pi.cost) as total_pur
@@ -58,10 +50,11 @@ if(is_array($arts)){
 			"GROUP BY a.a_id ORDER By a.a_id ASC";
 		$result_2 = $thisDb->dbQuery($sql);
 		if($result_2 <= 0){
-			//$arts[$i]['count'] = $count;
+			//$inv[$i]['count'] = $count;
 		}else{
 			$count += $result_2[0]['count_pur'];
 		}
+
 
 
 
@@ -71,41 +64,20 @@ if(is_array($arts)){
 			"GROUP BY a.a_id ORDER By a.a_id ASC";
 		$result_2 = $thisDb->dbQuery($sql);
 		if($result_2 <= 0){
-			//$arts[$i]['count'] = $count;
+			//$inv[$i]['count'] = $count;
 		}else{
 			$count -= $result_2[0]['count_rf'];
+			//$inv[$i]['count'] = $count;
 		}
-		$arts[$i]['count'] = $count;
-
-
-
+		$inv[$i]['count'] = $count;
 	}
 }
 
 
 
-
-
-$data['arts'] = $arts;
-
-$sales = dbRptQuerySales($timeFrom, $timeTo);
-if ($sales <= 0)
-	$data['sales'] = 0;
-else
-	$data['sales'] = $sales;
-
-$purs = dbRptQueryPurs($timeFrom, $timeTo);
-if ($purs <= 0)
-	$data['purs'] = 0;
-else
-	$data['purs'] = $purs;
-
-$refunds = dbRptQueryRefunds($timeFrom, $timeTo);
-if ($refunds <= 0)
-	$data['refunds'] = 0;
-else
-	$data['refunds'] = $refunds;
-	
-echo json_encode($data);	
+if($inv < 0)
+	echo json_encode("NO");
+else		
+	echo json_encode($inv);
 
 ?>

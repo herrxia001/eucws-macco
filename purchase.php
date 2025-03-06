@@ -44,7 +44,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="zh">
 <head>
     <?php include 'include/header.php' ?>	
 	<title>EUCWS - Purchase</title>
@@ -84,6 +84,8 @@ body {
 		</div>
 		<div class="p-1 col-9 col-sm-9 col-md-9 col-lg-6" align="right">
 			<!--<button type="button" class="btn btn-secondary" id="btnBarcode"  onclick="showBarcode()"><span class='fa fa-barcode'></span></button>-->
+			<button type="button" class="btn btn-secondary" id="btnDis" onclick="showDis()"><span class="fa fa-percent"></span></button>
+			<button type="button" class="btn btn-secondary" id="btnFee" onclick="showFee()"><span class="fa fa-eur"></span></button>
 			<button type="button" class="btn btn-success" id="btnBarcode"  onclick="printBarcode()"><span class='fa fa-print'></span> 打印条码</button>
 			<button type="button" class="btn btn-primary" id="btnNew" style="width:100px" onclick="showNewSearch()"><span class='fa fa-plus'></span></button>			
 		</div>
@@ -115,6 +117,7 @@ body {
 				<label id="itemCount" class="mt-2" style="color:white; font-weight:bold">0</label>
 			<label style="color:white">&nbsp;&nbsp;<?php echo $thisResource->comTotalQuantity ?>:&nbsp;</label>
 				<label id="sumCount" class="mt-2" style="color:white; font-weight:bold">0</label>
+			<div style="color: white;" id="price_more"></div>
 			<label style="color:white">&nbsp;&nbsp;<?php echo $thisResource->comTotalGross ?>:&nbsp;</label>
 				<label id="sumCost" class="mt-2" style="color:white; font-weight:bold">0.00</label>
 		</div>
@@ -307,6 +310,23 @@ body {
 				<div class="input-group-prepend"><span class="input-group-text" style="width:100px"><?php echo $thisResource->comDue ?></span></div>
 				<input type="text" class="form-control" name="mph_unpaid" id="mph_unpaid">
 			</div>
+
+			<div class="input-group p-1">
+				<div class="form-check ml-4 pt-2">
+					<input class="form-check-input" type="radio" value="1" name="isPayed" id="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+					<label class="form-check-label" for="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+						已付
+					</label>
+				</div>
+				<div class="form-check ml-4 pt-2">
+					<input class="form-check-input" type="radio" value="0" name="isPayed" id="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
+					<label class="form-check-label" for="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
+						未付
+					</label>
+				</div>
+				<div class="input-group-prepend ml-2"><span class="input-group-text" style="font-size:14px;">付款时间</span></div>
+				<input type="date" class="form-control" style="font-size:14px;" id="mdp_paidDatum" name="mdp_paidDatum" value="">
+			</div>
 		</div>
 		</div>
 		<div class="modal-footer">
@@ -351,6 +371,57 @@ body {
 	</div>
 </div> <!-- End of Modal: new variant -->	
 
+
+
+
+
+<!-- Modal: Discount -->
+<div class="modal fade" id="modalOrderDis" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<b class="modal-title" id="mdOrderDisTitle"><?php echo $thisResource->comDiscount ?></b>
+		</div>
+		<div class="modal-body">
+			<div class="input-group p-1">
+				<div class="input-group-prepend"><span class="input-group-text"  style="width:120px;"><?php echo $thisResource->comDiscountRate ?></span></div>
+				<input type="number" min="0" step="0.01" class="form-control" name="mdi_discount_rate" id="mdi_discount_rate" oninput="oninputDis()">
+			</div>	
+			<div class="input-group p-1">
+				<div class="input-group-prepend"><span class="input-group-text"  style="width:120px;"><?php echo $thisResource->comDiscountValue ?></span></div>
+				<input type="text" class="form-control" name="mdi_discount" id="mdi_discount" readonly>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class='fa fa-times'></span></button>
+			<button type="button" class="btn btn-primary" id="btnDisOk" onclick="doneDis()"><span class='fa fa-check'></span></button>
+		</div>
+		</div>
+	</div>
+</div> <!-- End of Modal: Discount -->
+
+<!-- Modal: Fees -->
+<div class="modal fade" id="modalOrderFee" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+		<div class="modal-header">
+			<b class="modal-title" id="mdOrderFeeTitle"><?php echo $thisResource->comFee ?></b>
+		</div>
+		<div class="modal-body">
+			<div class="input-group p-1">
+				<div class="input-group-prepend"><span class="input-group-text" style="width:120px;"><?php echo $thisResource->comFeeShipping ?></span></div>
+				<input type="number" min="0" step="0.01" class="form-control" name="mf_fee1" id="mf_fee1">
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class='fa fa-times'></span></button>
+			<button type="button" class="btn btn-primary" id="btnFeeOk" onclick="doneFee()"><span class='fa fa-check'></span></button>
+		</div>
+		</div>
+	</div>
+</div> <!-- End of Modal: Fees -->
+
+
 </div> <!-- end of container -->
 </form>	<!-- end of form -->
 
@@ -365,6 +436,8 @@ var $table = $("#myTable");
 var $modalPurHeader = $("#modalPurHeader");
 var $modalPurNewSearch = $("#modalPurNewSearch");
 var $modalPurItem = $("#modalPurItem");
+var $modalOrderDis = $("#modalOrderDis");
+var $modalOrderFee = $("#modalOrderFee");
 // Data
 var pur = {}, purItems = new Array();
 var itemCount = 0, itemIdCount = 0;
@@ -389,7 +462,23 @@ $table.bootstrapTable({
 	formatNoMatches: function () {
          return myRes['msgErrNoRecord'];
     }
-});		
+});
+function currentDate(option) {
+	var dt, d = new Date();
+	var t = d.getDate();
+	if (t < 10) t = '0'+t;
+	var m = d.getMonth()+1;
+	if (m < 10) m = '0'+m;
+	
+	if (option == 1)
+		dt = t+m+d.getFullYear();
+	else if (option == 2)
+		dt = d.getFullYear()+"-"+m+"-"+t;
+	else
+		dt = t+"/"+m+"/"+d.getFullYear();
+	
+	return dt;
+}		
 $(document).ready(function(){	
 	// Load purItems
 	if (purType == 1) {
@@ -463,6 +552,13 @@ function doneHeader() {
 		pur['unpaid'] = "0.00";
 	else
 		pur['unpaid'] = parseFloat(unpaid).toFixed(2);
+
+	pur['isPayed'] = -1;
+	pur['paidDatum'] = "";
+	if(document.getElementById("mdp_isPayed").checked == true){
+		pur['isPayed'] = 1;
+		pur['paidDatum'] = document.getElementById("mdp_paidDatum").value;
+	}
 	
 	var link = "postPurHeader.php";
 	var form = new FormData();
@@ -476,6 +572,16 @@ function showHeader() {
 	document.getElementById("mph_note").value = pur['note'];
 	document.getElementById("mph_unpaid").value = pur['unpaid'];
 	
+	if(pur['isPayed'] == 1){
+		document.getElementById("mdp_isPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = pur['paidDatum'];
+		if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2));
+	}
+	else {
+		document.getElementById("mdp_isNotPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = "";
+	}
+
 	$modalPurHeader.modal();
 }
 // Supplier funcitons
@@ -607,7 +713,19 @@ function loadPurVariantNo(result) {
 function displaySum() {
 	document.getElementById("itemCount").innerHTML = itemCount;	
 	document.getElementById("sumCount").innerHTML = sumCount;
-	document.getElementById("sumCost").innerHTML = sumCost.toFixed(2);
+	if(pur['discount'] == null) pur['discount'] = 0;
+	if(pur['fee'] == null) pur['fee'] = 0;
+	var total_sum = (sumCost * (100 - parseFloat(pur['discount']))) / 100 + parseFloat(pur['fee']);
+	pur['total_sum'] = total_sum;
+	document.getElementById("sumCost").innerHTML = total_sum.toFixed(2);
+	var price_more = "";
+	if(pur['discount'] > 0) price_more = "原价: <b>"+sumCost.toFixed(2)+"</b><br>打折: <b>-" + (sumCost * parseFloat(pur['discount']) / 100).toFixed(2)+" ("+pur['discount']+"%)</b>";
+	if(pur['fee'] > 0){
+		if(price_more == ""){
+			price_more = "原价: <b>"+sumCost.toFixed(2)+"</b><br>运费: <b>" + pur['fee'] + "</b>";
+		}else price_more += "<br>运费: <b>" + pur['fee'] + "</b>";
+	} 
+	document.getElementById("price_more").innerHTML = price_more;
 }
 
 // Find purItems item by searching id
@@ -1377,6 +1495,104 @@ function filterFunction(obj) {
       a[i].style.display = "none";
     }
   }
+}
+
+function displayValue(v) {
+	if (v == "0.00" || v == "0")
+		return "";
+	else
+		return v;
+}
+function checkNumber(id, min, max) {
+	var data = document.getElementById(id).value;
+	if (data == "")
+		return "0.00";
+	if (!onlyNumber(data))
+		return false;
+	var d = parseFloat(data);	
+	if (d < min || d > max)
+		return false;
+	
+	return d.toFixed(2);
+}
+/************************************************************************
+	DISCOUNT
+************************************************************************/
+
+$modalOrderDis.on('shown.bs.modal', function () {
+	$("#mdi_discount_rate").trigger('focus');
+})
+
+function displayDis() {
+	var discount;
+	if(pur["discount"] == null){
+		discount = 0;
+		pur["discount"] = 0;
+	}
+	else discount = parseFloat(pur['cost_sum'])*parseFloat(pur['discount'])/100;
+	document.getElementById("mdi_discount_rate").value = displayValue(pur['discount']);
+	document.getElementById("mdi_discount").value = discount.toFixed(2);
+}
+
+function oninputDis(){
+	var discount = 0;
+
+	var data = checkNumber("mdi_discount_rate", 0, 100);
+	if (!data) {
+		$("#mdi_discount_rate").trigger('focus');
+			return false;
+	}
+	else
+		discount = data;
+
+	discount = parseFloat(pur['cost_sum'])*parseFloat(discount)/100;
+	document.getElementById("mdi_discount").value = discount.toFixed(2);
+}
+
+function showDis() {
+	displayDis();
+	$modalOrderDis.modal();	
+}
+function doneDis() {
+	var data = checkNumber("mdi_discount_rate", 0, 100);
+	if (!data) {
+		$("#mdi_discount_rate").trigger('focus');
+			return false;
+	}
+	else
+		pur['discount'] = data;
+	
+	var discount = parseFloat(pur['cost_sum'])*parseFloat(pur['discount'])/100;
+	document.getElementById("mdi_discount").value = discount.toFixed(2);
+	
+	$modalOrderDis.modal("toggle");
+	displaySum();
+}
+
+/************************************************************************
+	FEES
+************************************************************************/
+$modalOrderFee.on('shown.bs.modal', function () {
+	$("#mf_fee1").trigger('focus');
+})
+function displayFee() {
+	document.getElementById("mf_fee1").value = displayValue(pur['fee']);
+}
+function showFee() {
+	displayFee();
+	$modalOrderFee.modal();	
+}
+function doneFee() {
+	var data = checkNumber("mf_fee1", 0, 10000);
+	if (!data) {
+		$("#mf_fee1").trigger('focus');
+			return false;
+	}
+	else
+		pur['fee'] = data;
+	
+	$modalOrderFee.modal("toggle");	
+	displaySum();
 }
 </script>
 
