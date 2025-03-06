@@ -37,9 +37,9 @@
 					<a class="nav-link dropdown-toggle" href="#" id="dropdownSys" data-toggle="dropdown">库存</a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="a_artmgt.php">当前库存</a>
-                        <a class="dropdown-item" href="a_artmgt_old.php">历史库存</a>
+                        <!--a class="dropdown-item" href="a_artmgt_old.php">历史库存</a-->
 						<a class="dropdown-item" href="a_art_rpt_yr.php">库存年报</a>
-						<a class="dropdown-item" href="a_art_rpt_qt.php">库存季报</a>
+						<!--a class="dropdown-item" href="a_art_rpt_qt.php">库存季报</a-->
 						<?php if ($_SESSION['uDb'] == "cara") { ?>
 						<a class="dropdown-item" href="a_artmgt_old.php">库存明细</a>
 						<?php } else { ?>

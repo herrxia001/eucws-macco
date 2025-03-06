@@ -21,7 +21,7 @@ $thisResource = new myResource($_SESSION['uLanguage']);
 ?>
 
 <!doctype html>
-<html lang="zh">
+<html lang="en">
 
 <head>
     <?php include 'include/header.php' ?>
@@ -120,13 +120,14 @@ $thisResource = new myResource($_SESSION['uLanguage']);
 				<tr>
 				<th class="p-1" data-field="id" data-width="" data-width-unit="%" data-visible="false"></th>
 				<th class="p-1" data-field="idx_no" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">发票号</th>	
-				<th class="p-1" data-field="idx_date" data-width="20" data-width-unit="%" data-align="center" data-sortable="true">发票时间</th>
+				<th class="p-1" data-field="idx_date" data-width="10" data-width-unit="%" data-align="center" data-sortable="true">发票时间</th>
 				<th class="p-1" data-field="idx_cust" data-width="30" data-width-unit="%" data-sortable="true" >客户</th>	
 				<th class="p-1" data-field="idx_count" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">件数</th>
 				<th class="p-1" data-field="idx_total" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">税前金额</th>
 				<th class="p-1" data-field="idx_tax" data-width="5" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">MwSt.</th>
 				<th class="p-1" data-field="idx_net" data-width="15" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">税后金额</th>
 				<th class="p-1" data-field="idx_fee1" data-width="15" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">运费</th>
+				<th class="p-1" data-field="idx_paidDatum" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">付款时间</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -151,7 +152,6 @@ $thisResource = new myResource($_SESSION['uLanguage']);
 						<a class="dropdown-item" href="#" onclick="selPay(this)">Vorkasse</a>
 					</div>
 				</div>
-
 				<div class="dropdown" style="display: inline-block;">
 					<button type="button" id="btnisPay" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">全部</button>
 					<div class="dropdown-menu">
@@ -277,7 +277,6 @@ function loadTable(){
 		displaySum();
 		return;
 	}
-
 	$table.bootstrapTable('removeAll');
 	orders.sort(sortTable(sortCol, sortOp));
 	var rows = [];
@@ -306,7 +305,8 @@ function loadTable(){
 			idx_total: orders[i]['total_sum'],
 			idx_tax: tax.toFixed(2),
 			idx_net: orders[i]['net'],
-			idx_fee1: orders[i]['fee1']
+			idx_fee1: orders[i]['fee1'],
+			idx_paidDatum: orders[i]['paidDatum']
 		});
 		invoiceTotal++;
 		countTotal += parseInt(orders[i]['count_sum']);
@@ -315,7 +315,7 @@ function loadTable(){
 		netTotal += parseFloat(orders[i]['net']);
 		fee1Total += parseFloat(orders[i]['fee1']);
 	}
-	$table.bootstrapTable('append', rows);	
+	$table.bootstrapTable('append', rows);
 	var index = 0;
 	for(var i=0; i<orderCount; i++){
 		payFlag = checkPay(orders[i]);
@@ -332,7 +332,6 @@ function loadTable(){
 		}
 		index++;
 	}
-
 	displaySum();
 }
 
@@ -581,7 +580,7 @@ function convertNumber(number) {
 function exportFile() {
 	var delim = ',';
 	if (aOptions['exportDecimal'] == 1) delim = ';';
-	var output = "Rechnung Nr."+delim+"Datum Rechnung"+delim+"Steuergrundlage"+delim+"MwSt"+delim+"Gesamtbetrag"+delim+"Firma\n";
+	var output = "Rechnung Nr."+delim+"Datum Rechnung"+delim+"Datum Zahlung"+delim+"Steuergrundlage"+delim+"MwSt"+delim+"Gesamtbetrag"+delim+"Firma\n";
 	var inNo = "", payFlag = 0;
 	for (var i=0; i<orderCount; i++) {
 		payFlag = checkPay(orders[i]);
@@ -598,7 +597,13 @@ function exportFile() {
 			inNo = orders[i]['invoice_no'] + " *";
 		var tax = parseFloat(orders[i]['total_sum'])*parseFloat(orders[i]['tax_rate'])/100;
 		output += inNo + delim;
+
+		var paidDatum = orders[i]['paidDatum'];
+		if(paidDatum !== null && paidDatum != "" ) paidDatum = convertDate(orders[i]['paidDatum'].substring(0,10));
+		else paidDatum = "-";
+
 		output += convertDate(orders[i]['date'].substring(0,10))+delim;
+		output += paidDatum+delim;
 		if (aOptions['exportDecimal'] == 1) {
 			output += convertNumber(orders[i]['total_sum'])+delim;
 			output += convertNumber(tax.toFixed(2))+delim;
@@ -647,6 +652,7 @@ function printFile() {
 	output += '<tr style="font-size:12px;">';
 	output += '<th align="center" style="border-left:1px solid;">Rechnung Nr.</th>';
 	output += '<th align="center" style="border-left:1px solid;">Datum<br>Rechnung</th>';
+	output += '<th align="center" style="border-left:1px solid;">Datum<br>Zahlung</th>';
 	output += '<th align="left" style="border-left:1px solid;">Steuergrundlage</th>';
 	output += '<th align="left" style="border-left:1px solid;">MwSt</th>';
 	output += '<th align="left" style="border-left:1px solid;">Gesamtbetrag</th>';
@@ -667,9 +673,15 @@ function printFile() {
 		else
 			inNo = orders[i]['invoice_no'] + " *";
 		var tax = parseFloat(orders[i]['total_sum'])*parseFloat(orders[i]['tax_rate'])/100;
+
+		var paidDatum = orders[i]['paidDatum'];
+		if(paidDatum !== null && paidDatum != "" ) paidDatum = convertDate(orders[i]['paidDatum'].substring(0,10));
+		else paidDatum = "-";
+
 		output += '<tr style="font-size:12px;">';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+inNo+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+convertDate(orders[i]['date'].substring(0,10))+'</td>';
+		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;">'+'&nbsp;'+paidDatum+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+'&nbsp;'+orders[i]['total_sum']+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+'&nbsp;'+tax.toFixed(2)+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+'&nbsp;'+orders[i]['net']+'</td>';
@@ -677,7 +689,7 @@ function printFile() {
 		output += '</tr>';
 	}
 	output += '<tr style="font-size:12px;">';
-	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" colspan="2">Gesamtsumme&nbsp;</td>';
+	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" colspan="3">Gesamtsumme&nbsp;</td>';
 	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+priceTotal.toFixed(2)+'</td>';
 	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+taxTotal.toFixed(2)+'</td>';
 	output += '<td align="right" style="padding:1px; border-left:1px solid; border-top:1px solid;" align="right">'+netTotal.toFixed(2)+'</td>';
@@ -715,6 +727,7 @@ var pdfRechNr = "";
 function pdfFile() {
 	if(!confirm("确定要导出 "+orderCount+" 个PDF文件?"))
 		return;
+
 	var i=0;
 	var id_str = "";
 	for(i = 0; i<orders.length; i++){
@@ -724,7 +737,7 @@ function pdfFile() {
 	console.log(id_str);
 	window.open("api/xrechnungZip.php?id_str="+id_str);
 	//modalPdf.modal();
-	//getOrderItem();	
+	//getOrderItems();		
 }
 
 function savePdf(invoiceHTML) {
@@ -761,11 +774,248 @@ function getOrderItem(rId) {
 
 function getOrderItemsYes(result) {
 	var invoiceHTML = getInvoiceHTML(result);
+	//var invoiceXML = getInvoiceXML(result);
 	savePdf(invoiceHTML);
 }
 
 function getOrderItemsNo(result) {
 	alert("error");
+}
+function getInvoiceXML(orderItems){
+	var order = orders[pdfCount];
+	var cust = getCustById(order['k_id']);
+	var itemCount = orderItems.length;
+
+
+	var date_tmp = order['date'].substring(0,4)+order['date'].substring(5,7)+order['date'].substring(8,10);
+	var date_tmp_2 = order['date'].substring(8,10)+"."+order['date'].substring(5,7)+"."+order['date'].substring(0,4);
+	var liefer_date_tmp = order['lieferdatum'].substring(0,4)+order['lieferdatum'].substring(5,7)+order['lieferdatum'].substring(8,10);
+	var output = '\<\?xml version="1.0" encoding="UTF-8" \?\><rsm:CrossIndustryInvoice xmlns:rsm="urn:un:unece:uncefact:data:standard:CrossIndustryInvoice:100" xmlns:a="urn:un:unece:uncefact:data:standard:QualifiedDataType:100" xmlns:qdt="urn:un:unece:uncefact:data:standard:QualifiedDataType:10" xmlns:ram="urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:udt="urn:un:unece:uncefact:data:standard:UnqualifiedDataType:100" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+    output += '<rsm:ExchangedDocumentContext>';
+    output += '<ram:GuidelineSpecifiedDocumentContextParameter>';
+    output += '<ram:ID>urn:cen.eu:en16931:2017</ram:ID>';
+    output += '</ram:GuidelineSpecifiedDocumentContextParameter>';
+    output += '</rsm:ExchangedDocumentContext>';
+    
+    output += '<rsm:ExchangedDocument>';
+    output += '<ram:ID>'+order['invoice_no']+'</ram:ID>';
+    output += '<ram:TypeCode>380</ram:TypeCode>';
+    output += '<ram:IssueDateTime>';
+    output += '<udt:DateTimeString format="102">'+date_tmp+'</udt:DateTimeString>';
+    output += '</ram:IssueDateTime>';
+    output += '<ram:IncludedNote>';
+    output += '<ram:Content>Rechnung gemäß Bestellung vom '+date_tmp_2+'.</ram:Content>';
+    output += '</ram:IncludedNote>';
+    output += '<ram:IncludedNote>';
+    output += '<ram:Content>'+company["c_name"]+' ';
+    output += company["address"]+', ';
+	output += company["post"] + ' ' + company["city"] +' ';
+	output += company["country"]+' ';
+	output += 'Geschäftsführer: ' + company["geschaeftsfuehrer"]+' ';
+	output += 'Handelsregisternummer: ' + company["hrb"]+' ';
+	//Geschäftsführer: Hans Muster
+    //Handelsregisternummer: H A 123
+    output += '</ram:Content>';
+    output += '<ram:SubjectCode>REG</ram:SubjectCode>';
+    output += '</ram:IncludedNote>';
+    output += '</rsm:ExchangedDocument>';
+    output += '<rsm:SupplyChainTradeTransaction>';
+	for (i=0; i<itemCount; i++) {
+		var priceStr = orderItems[i]['price'];
+		var discount = orderItems[i]['discount'];
+		var rabatt = "";
+		if(discount > 0){
+			rabatt = " (Rabatt: "+parseFloat(orderItems[i]['discount']).toFixed(0)+"%)";
+			priceStr = (((100-discount) * orderItems[i]['price']) /100).toFixed(2);
+		}
+
+		var discount = 0;
+		if (notZero(order['discount_rate'])) {
+			rabatt += " (Rabatt: "+parseFloat(order['discount_rate']).toFixed(0)+"%)";
+			discount = parseFloat(orderItems[i]['subtotal'])*parseFloat(order['discount_rate'])/100;
+			orderItems[i]['subtotal'] = (parseFloat(orderItems[i]['subtotal']) - discount).toFixed(2);
+		}
+
+		output += '<ram:IncludedSupplyChainTradeLineItem>';
+        output += '<ram:AssociatedDocumentLineDocument>';
+        output += '<ram:LineID>'+(i+1)+'</ram:LineID>';
+        output += '</ram:AssociatedDocumentLineDocument>';
+        output += '<ram:SpecifiedTradeProduct>';
+        output += '<ram:GlobalID schemeID="0160">'+orderItems[i]['i_code']+'</ram:GlobalID>';
+        output += '<ram:SellerAssignedID>'+orderItems[i]['i_id']+'</ram:SellerAssignedID>';
+        output += '<ram:Name>'+orderItems[i]['i_name']+' ' + rabatt +'</ram:Name>';
+        output += '</ram:SpecifiedTradeProduct>';
+        output += '<ram:SpecifiedLineTradeAgreement>';
+        output += '<ram:GrossPriceProductTradePrice>';
+        output += '<ram:ChargeAmount>'+priceStr+'</ram:ChargeAmount>';
+        output += '</ram:GrossPriceProductTradePrice>';
+        output += '<ram:NetPriceProductTradePrice>';
+        output += '<ram:ChargeAmount>'+priceStr+'</ram:ChargeAmount>';
+        output += '</ram:NetPriceProductTradePrice>';
+        output += '</ram:SpecifiedLineTradeAgreement>';
+        output += '<ram:SpecifiedLineTradeDelivery>';
+        output += '<ram:BilledQuantity unitCode="H87">'+orderItems[i]['real_count']+'</ram:BilledQuantity>';
+        output += '</ram:SpecifiedLineTradeDelivery>';
+        output += '<ram:SpecifiedLineTradeSettlement>';
+        output += '<ram:ApplicableTradeTax>';
+        output += '<ram:TypeCode>VAT</ram:TypeCode>';
+        output += '<ram:CategoryCode>S</ram:CategoryCode>';
+        output += '<ram:RateApplicablePercent>'+order['tax_rate']+'</ram:RateApplicablePercent>';
+        output += '</ram:ApplicableTradeTax>';
+        output += '<ram:SpecifiedTradeSettlementLineMonetarySummation>';
+        output += '<ram:LineTotalAmount>'+orderItems[i]['subtotal']+'</ram:LineTotalAmount>';
+        output += '</ram:SpecifiedTradeSettlementLineMonetarySummation>';
+        output += '</ram:SpecifiedLineTradeSettlement>';
+        output += '</ram:IncludedSupplyChainTradeLineItem>';
+	}
+	
+	// kosten //
+	var fee = 0;
+// Fees
+if (notZero(order['fee1'])) {
+		fee += parseFloat(order['fee1']);
+	}
+	if (notZero(order['fee2'])) {
+		fee += parseFloat(order['fee2']);
+	}
+	if (notZero(order['fee3'])) {
+		fee += parseFloat(order['fee3']);
+	}
+	if (notZero(order['fee4'])) {
+		fee += parseFloat(order['fee4']);
+	}
+	if (notZero(order['fee5'])) {
+		fee += parseFloat(order['fee5']);
+	}
+	if(fee > 0){
+		output += '<ram:IncludedSupplyChainTradeLineItem>';
+        output += '<ram:AssociatedDocumentLineDocument>';
+        output += '<ram:LineID>'+(i+1)+'</ram:LineID>';
+        output += '</ram:AssociatedDocumentLineDocument>';
+        output += '<ram:SpecifiedTradeProduct>';
+        output += '<ram:Name>Extra Kosten</ram:Name>';
+        output += '</ram:SpecifiedTradeProduct>';
+        output += '<ram:SpecifiedLineTradeAgreement>';
+        output += '<ram:GrossPriceProductTradePrice>';
+        output += '<ram:ChargeAmount>'+fee+'</ram:ChargeAmount>';
+        output += '</ram:GrossPriceProductTradePrice>';
+        output += '<ram:NetPriceProductTradePrice>';
+        output += '<ram:ChargeAmount>'+fee+'</ram:ChargeAmount>';
+        output += '</ram:NetPriceProductTradePrice>';
+        output += '</ram:SpecifiedLineTradeAgreement>';
+        output += '<ram:SpecifiedLineTradeDelivery>';
+        output += '<ram:BilledQuantity unitCode="H87">1</ram:BilledQuantity>';
+        output += '</ram:SpecifiedLineTradeDelivery>';
+        output += '<ram:SpecifiedLineTradeSettlement>';
+        output += '<ram:ApplicableTradeTax>';
+        output += '<ram:TypeCode>VAT</ram:TypeCode>';
+        output += '<ram:CategoryCode>S</ram:CategoryCode>';
+        output += '<ram:RateApplicablePercent>'+order['tax_rate']+'</ram:RateApplicablePercent>';
+        output += '</ram:ApplicableTradeTax>';
+        output += '<ram:SpecifiedTradeSettlementLineMonetarySummation>';
+        output += '<ram:LineTotalAmount>'+fee+'</ram:LineTotalAmount>';
+        output += '</ram:SpecifiedTradeSettlementLineMonetarySummation>';
+        output += '</ram:SpecifiedLineTradeSettlement>';
+        output += '</ram:IncludedSupplyChainTradeLineItem>';
+	}
+
+
+	var seller_tel = company['tel'];
+	if(seller_tel == "") seller_tel = company['mobile'];
+    output += '<ram:ApplicableHeaderTradeAgreement>';
+    output += '<ram:BuyerReference>'+order['invoice_no']+'</ram:BuyerReference>';
+    output += '<ram:SellerTradeParty>';
+    output += '<ram:ID>'+company['c_id']+'</ram:ID>';
+    output += '<ram:GlobalID schemeID="0088">'+company['c_id']+'</ram:GlobalID>';
+    output += '<ram:Name>'+company['c_name']+'</ram:Name>';
+    output += '<ram:DefinedTradeContact>';
+    output += '<ram:PersonName>'+company['geschaeftsfuehrer']+'</ram:PersonName>';
+    output += '<ram:DepartmentName>Buchhaltung</ram:DepartmentName>';
+    output += '<ram:TelephoneUniversalCommunication>';
+    output += '<ram:CompleteNumber>'+seller_tel+'</ram:CompleteNumber>';
+    output += '</ram:TelephoneUniversalCommunication>';
+    output += '<ram:EmailURIUniversalCommunication>';
+    output += '<ram:URIID>'+company['email']+'</ram:URIID>';
+    output += '</ram:EmailURIUniversalCommunication>';
+    output += '</ram:DefinedTradeContact>';
+    output += '<ram:PostalTradeAddress>';
+    output += '<ram:PostcodeCode>'+company['post']+'</ram:PostcodeCode>';
+    output += '<ram:LineOne>'+company['address']+'</ram:LineOne>';
+    output += '<ram:CityName>'+company['city']+'</ram:CityName>';
+    output += '<ram:CountryID>DE</ram:CountryID>';
+    output += '</ram:PostalTradeAddress>';
+    output += '<ram:SpecifiedTaxRegistration>';
+    output += '<ram:ID schemeID="FC">'+company["tax_no"]+'</ram:ID>';
+    output += '</ram:SpecifiedTaxRegistration>';
+    output += '<ram:SpecifiedTaxRegistration>';
+    output += '<ram:ID schemeID="VA">'+company["uid_no"]+'</ram:ID>';
+    output += '</ram:SpecifiedTaxRegistration>';
+    output += '</ram:SellerTradeParty>';
+    output += '<ram:BuyerTradeParty>';
+    output += '<ram:ID>'+cust["k_id"]+'</ram:ID>';
+    output += '<ram:Name>'+cust["k_name"]+'</ram:Name>';
+    output += '<ram:PostalTradeAddress>';
+    output += '<ram:PostcodeCode>'+cust["post"]+'</ram:PostcodeCode>';
+    output += '<ram:LineOne>'+cust["address"]+'</ram:LineOne>';
+    output += '<ram:CityName>'+cust["city"]+'</ram:CityName>';
+    output += '<ram:CountryID>DE</ram:CountryID>';
+    output += '</ram:PostalTradeAddress>';
+    output += '</ram:BuyerTradeParty>';
+    output += '</ram:ApplicableHeaderTradeAgreement>';
+    output += '<ram:ApplicableHeaderTradeDelivery>';
+    output += '<ram:ActualDeliverySupplyChainEvent>';
+    output += '<ram:OccurrenceDateTime>';
+    output += '<udt:DateTimeString format="102">'+liefer_date_tmp+'</udt:DateTimeString>';
+    output += '</ram:OccurrenceDateTime>';
+    output += '</ram:ActualDeliverySupplyChainEvent>';
+    output += '</ram:ApplicableHeaderTradeDelivery>';
+    output += '<ram:ApplicableHeaderTradeSettlement>';
+    output += '<ram:InvoiceCurrencyCode>EUR</ram:InvoiceCurrencyCode>';
+    output += '<ram:SpecifiedTradeSettlementPaymentMeans>';
+	var typcode = 58;
+	if(parseFloat(order['pay_cash']) > 0) typcode = 10;
+	else if(parseFloat(order['pay_check']) > 0) typcode = 20;
+	else if(parseFloat(order['pay_bank']) > 0) typcode = 30;
+	else if(parseFloat(order['pay_card']) > 0) typcode = 48;
+    output += '<ram:TypeCode>'+typcode+'</ram:TypeCode>';
+    output += '<ram:PayeePartyCreditorFinancialAccount>';
+    output += '<ram:IBANID>'+company["iban"]+'</ram:IBANID>';
+    output += '</ram:PayeePartyCreditorFinancialAccount>';
+    output += '</ram:SpecifiedTradeSettlementPaymentMeans>';
+    output += '<ram:ApplicableTradeTax>';
+	var tax = (parseFloat(order['total_sum'])*parseFloat(order['tax_rate'])/100+0.0000001).toFixed(2);	
+    output += '<ram:CalculatedAmount>'+tax+'</ram:CalculatedAmount>';
+    output += '<ram:TypeCode>VAT</ram:TypeCode>';
+    output += '<ram:BasisAmount>'+order['total_sum']+'</ram:BasisAmount>';
+    output += '<ram:CategoryCode>S</ram:CategoryCode>';
+    output += '<ram:RateApplicablePercent>'+order['tax_rate']+'</ram:RateApplicablePercent>';
+	output += '</ram:ApplicableTradeTax>';
+    output += '<ram:SpecifiedTradePaymentTerms>';
+    output += '<ram:Description>* Die Waren bleiben bis zur vollständigen Bezahlung unser Eigentum. Reklamation nur innerhalb von 7 Tagen. ';
+	output += '* Bitte kontrollieren Sie die berechnete Menge sofort. Spätere Mengenreklamationen können nicht anerkannt werden. Reduzierte Ware ist vom Umtausch und Skonto ausgeschlossen. ';
+	output += 'Im Falle der Rechnungsbegleichung per Überweisung bitten wir Sie, den fälligen Betrag innerhalb von 14 Tagen auf unser Konto bei der Sparkasse Neuss mit der IBAN '+company["iban"]+' (BIC '+company["bic"]+') zu überweisen. Wir bitten Sie, auf Ihrer Überweisung die Rechnungsnummer anzugeben.';
+	output += '</ram:Description>';
+    output += '</ram:SpecifiedTradePaymentTerms>';
+    output += '<ram:SpecifiedTradeSettlementHeaderMonetarySummation>';
+
+	
+	
+	// Total
+
+	output += '<ram:LineTotalAmount>'+order['total_sum']+'</ram:LineTotalAmount>';
+	output += '<ram:ChargeTotalAmount>0</ram:ChargeTotalAmount>';
+	output += '<ram:AllowanceTotalAmount>0</ram:AllowanceTotalAmount>';
+	output += '<ram:TaxBasisTotalAmount>'+order['total_sum']+'</ram:TaxBasisTotalAmount>';
+	output += '<ram:TaxTotalAmount currencyID="EUR">'+tax+'</ram:TaxTotalAmount>';
+	output += '<ram:GrandTotalAmount>'+order['net']+'</ram:GrandTotalAmount>';
+	output += '<ram:TotalPrepaidAmount>0.00</ram:TotalPrepaidAmount>';
+	output += '<ram:DuePayableAmount>'+order['net']+'</ram:DuePayableAmount>';
+    output += '</ram:SpecifiedTradeSettlementHeaderMonetarySummation>';
+    output += '</ram:ApplicableHeaderTradeSettlement>';
+    output += '</rsm:SupplyChainTradeTransaction>';
+	output += '</rsm:CrossIndustryInvoice>';
+
+	return output;
 }
 
 function getInvoiceHTML(orderItems) { 

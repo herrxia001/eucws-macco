@@ -404,6 +404,24 @@ body {
 				<div class="input-group-prepend"><span class="input-group-text" style="width:120px;"><?php echo $thisResource->comDue ?></span></div>
 				<input type="text" class="form-control" name="mp_pays_due" id="mp_pays_due" readonly>
 			</div>	
+
+			<div class="input-group p-1">
+				<div class="form-check ml-4 pt-2">
+					<input class="form-check-input" type="radio" value="1" name="isPayed" id="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+					<label class="form-check-label" for="mdp_isPayed" onclick="if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2))">
+						已付
+					</label>
+				</div>
+				<div class="form-check ml-4 pt-2">
+					<input class="form-check-input" type="radio" value="0" name="isPayed" id="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
+					<label class="form-check-label" for="mdp_isNotPayed" onclick="$('#mdp_paidDatum').val('')">
+						未付
+					</label>
+				</div>
+				<div class="input-group-prepend ml-2"><span class="input-group-text" style="font-size:14px;">付款时间</span></div>
+				<input type="date" class="form-control" style="font-size:14px;" id="mdp_paidDatum" name="mdp_paidDatum" value="">
+			</div>
+
 		</div>
 		<div class="modal-footer">
 			<button type="button" class="btn btn-secondary" data-dismiss="modal"><span class='fa fa-times'></span></button>
@@ -1402,6 +1420,15 @@ function displayPay() {
 	document.getElementById("mp_total").value = order['total_sum'];
 	document.getElementById("mp_pays_total").value = pays_total.toFixed(2);
 	document.getElementById("mp_pays_due").value = pays_due.toFixed(2);
+	if(order['isPayed'] == 1){
+		document.getElementById("mdp_isPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = order['paidDatum'];
+		if($('#mdp_paidDatum').val()=='') $('#mdp_paidDatum').val(currentDate(2));
+	}
+	else {
+		document.getElementById("mdp_isNotPayed").checked = true;
+		document.getElementById("mdp_paidDatum").value = "";
+	}
 }
 // Show modalOrderPay
 function showPay() {
@@ -1493,6 +1520,12 @@ function donePay() {
 	}
 	order['due'] = pays_due;
 	$modalOrderPay.modal("toggle");
+	order['isPayed'] = -1;
+	order['paidDatum'] = "";
+	if(document.getElementById("mdp_isPayed").checked == true){
+		order['isPayed'] = 1;
+		order['paidDatum'] = document.getElementById("mdp_paidDatum").value;
+	}
 	displaySum();
 }
 /************************************************************************
@@ -1716,7 +1749,7 @@ function printForm() {
 	} else {
 		output = '<html><head><style type="text/css" media="print">@page { size:21.0cm 29.7cm; margin:0.8cm 0.8cm 0.8cm 1.5cm; }\</style></head><body>';
 	}
-	if (myCustomer == null || myCustomer['k_id'] == "" || myCustomer['k_id'] == "0" || printType == 0) {
+	if (myCustomer == null || myCustomer['k_id'] == "" || myCustomer['k_id'] == "0") {
 		withHeader = false;
 	} else {
 		withHeader = true;

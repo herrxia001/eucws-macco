@@ -1756,7 +1756,7 @@ function printInvoice() {
 		output += '<hr>';
 		output += '<a style="font-size:12px;">(Mitgliedstaat und Ort, wohin der Liefergegenstands im Rahmen einer Beförderung order Versendung gelangt ist)</a><br><br><br>';
 		output += 'erhalten habe / gelangt ist.';
-		output += '<br><br><br><br><br>';
+		output += '<br><br><br><br>';
 		output += '<a style="font-size:12px;">(Unterschrift des Abnehmers oder seines Vertretungsberechtigen sowie Name des Unterzeichnenden in Druckschrift)</a><br><br>';
 		printout += output;
 	}

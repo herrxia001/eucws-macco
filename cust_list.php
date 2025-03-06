@@ -24,7 +24,7 @@ if(isset($_GET['back']))
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="zh">
 <head>
     <?php include 'include/header.php' ?>
 	<title>EUCWS - Customers</title>
@@ -91,7 +91,7 @@ if(isset($_GET['back']))
 
 <script src="js/ajax.js"></script>
 <script src="js/autocomplete.js?202109131930"></script>
-<script src="js/modalCust.js?202108121654"></script>	
+<script src="js/modalCust.js?<?= rand() ?>"></script>	
 <script src="js/modalCustSearch.js?202109090946"></script>
 <script>
 

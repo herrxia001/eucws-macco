@@ -19,6 +19,8 @@ $myInvTypes = dbQueryTypes();
 $myUnits = dbQueryUnits();
 $myVariants = dbQueryVariants();
 $myAppTypes = dbAppTypesQuery();
+
+$myNames = dbQueryAllName();
 // Create path for images
 $myPath = "files/".$_SESSION['uDb']."/".strval(rand(0, 9));
 // back PHP
@@ -77,7 +79,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="zh">
 <head>
     <?php include 'include/header.php' ?>	
 	<title>EUCWS - Product</title>
@@ -113,15 +115,16 @@ body {
 			<div class="dropdown-menu">
 				<div class="dropdown-item" href="#" onclick="selStatus(this)"><?php echo $thisResource->comStatusNormal ?>
 					<input type='hidden' value='0'></div>
+				<div class="dropdown-item" href="#" onclick="selStatus(this)">未完成<input type='hidden' value='-1'></div>
 				<div class="dropdown-item" href="#" onclick="selStatus(this)"><?php echo $thisResource->comStatusOffline ?>
 					<input type='hidden' value='1'></div>
 			</div>
 		</div>
 		<div class="p-1 col-6 col-sm-6 col-md-6 col-lg-4" align="right">
 			<button type="button" class="btn btn-success" onclick="showPrintModalNoVariable()"><span class='fa fa-print'></span> 打印</button>
-			<button type="button" class="btn btn-outline-secondary " onclick="showApp()">APP</button>
+			<!--button type="button" class="btn btn-outline-secondary " onclick="showApp()">网站</button-->
 			<label for="imgIng" class="btn btn-outline-secondary mt-2"><span class='fa fa-camera'></label>
-			<input type="file" id="imgIng" name="imgIng" accept="image/*" hidden>
+			<input type="file" id="imgIng" name="imgIng" accept="image/*" multiple hidden>
 			<button type="button" id="ok" class="btn btn-primary" onclick="submitForm()"><?php echo $thisResource->comSave ?></button>
 		</div>
 	</div>
@@ -183,6 +186,18 @@ body {
 		<div class="input-group p-1 col-12 col-sm-12 col-md-12 col-lg-8"> 
 			<div class="input-group-prepend"><span class="input-group-text" style="width:100px;"><?php echo $thisResource->comName ?></span></div>
 			<input type="text" class="form-control" id="i_name" name="i_name" value="<?php echo $myInventory['i_name'] ?>">
+
+			<div class="input-group-append">
+				<div class="dropdown dropleft">
+					<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"></button>
+					<ul class="dropdown-menu" id="nameList">
+						<input type="text" style="position: sticky; top: 0; margin-left: 20px; margin-right: 20px; width: calc(100% - 40px);" class="form-control" placeholder="搜索.." id="myinput_name" oninput="filterFunction($(this))">
+						<?php for($i=0; $i<count($myNames); $i++) 
+						echo "<a class='dropdown-item' href='#' onclick='selName(this)'>".$myNames[$i]['i_name']."</a>";
+						?>
+					</ul>
+				</div>
+			</div>
 		</div>
 	</div>	
 <!-- count -->
@@ -632,9 +647,12 @@ function displayImage(image, option){
 var inputImg = document.getElementById("imgIng");
 // Display image and submit
 inputImg.onchange = function () {	
-	var file = inputImg.files[0];	
+	//var file = inputImg.files[0];	
 	// displayImage is a callback function
-	compressImage(file, displayImage, 0);	
+	//compressImage(file, displayImage, 0);	
+	for(var i = 0; i < inputImg.files.length; i++){
+		compressImage(inputImg.files[i], displayImage, 0);	
+	}
 }
 // Convert image to file for upload
 function convertImage(image){
@@ -942,6 +960,10 @@ var newSupIndex, newSupName;
 function selSup(e) {
 	var x = $(e).text();
 	document.getElementById("s_name").value = x;
+}
+function selName(e) {
+	var x = $(e).text();
+	document.getElementById("i_name").value = x;
 }
 function getSupIdByName(name) {
 	for (var i=0; i<a_sups.length; i++) {
@@ -1275,9 +1297,12 @@ function showStatus() {
 	if (myInv == null || myInv['status'] == "0") {
 		document.getElementById("status_str").innerText = myRes['comStatusNormal'];
 		document.getElementById("status").value = "0";
-	} else {
+	} else if(myInv['status'] == "1") {
 		document.getElementById("status_str").innerText = myRes['comStatusOffline'];
 		document.getElementById("status").value = "1";
+	} else {
+		document.getElementById("status_str").innerText = "未完成";
+		document.getElementById("status").value = "-1";
 	}
 }
 

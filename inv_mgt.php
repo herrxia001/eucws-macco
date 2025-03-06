@@ -21,7 +21,7 @@ $active[1] = "active";
 ?>
 
 <!doctype html>
-<html lang="en">
+<html lang="zh">
 <head>
     <?php include 'include/header.php' ?>
 	<title>EUCWS - Products</title>
@@ -200,6 +200,7 @@ $active[1] = "active";
 						<input type='hidden' value=''></div>
 					<div class="dropdown-item" href="#" onclick="selStatus(this)"><?php echo $thisResource->comStatusNormal ?>
 						<input type='hidden' value='0'></div>
+					<div class="dropdown-item" href="#" onclick="selStatus(this)">未完成<input type='hidden' value='-1'></div>
 					<div class="dropdown-item" href="#" onclick="selStatus(this)"><?php echo $thisResource->comStatusOffline ?>
 						<input type='hidden' value='1'></div>
 				</div>
@@ -678,8 +679,10 @@ function getStatusNameById(id) {
 		return "<?php echo $thisResource->comAll ?>";
 	else if (id == "1")
 		return "<?php echo $thisResource->comStatusOffline ?>";
-	else
+	else if (id == "0")
 		return "<?php echo $thisResource->comStatusNormal ?>";
+	else
+		return "未完成";
 }
 
 function getSeasonNameById(id) {

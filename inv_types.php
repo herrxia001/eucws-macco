@@ -61,7 +61,7 @@ body {
 				</tr>
 			</thead>
 			<tbody>
-				<?php if(is_array($myTypes)) for($i=0; $i<count($myTypes); $i++) { ?>    
+				<?php if(is_array($myTypes)) for($i=0; $i<count($myTypes); $i++) { if($myTypes[$i]['t_id'] == 0) continue; ?>    
 				<tr>
 				<td><?php echo $myTypes[$i]['t_id'] ?></td>
 				<td><?php echo $myTypes[$i]['t_name'] ?></td>
@@ -234,6 +234,7 @@ function tableLoad(result){
 	$table.bootstrapTable('removeAll');
 	var rows = [];
 	for(var i=0; i<types.length; i++){
+		if(types[i]['t_id'] == 0) continue;
 		rows.push({
 			id: types[i]['t_id'],
 			idx_name: types[i]['t_name'],

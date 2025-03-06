@@ -260,9 +260,9 @@ function dbUpdateInvoice($order)
 	$result = $thisDb->dbUpdate($sqlUpdate);
 
 	if($order['isPayed'] == "") $order['isPayed'] = 0;
-	$sqlUpdate = "UPDATE a_invoice SET isPayed = '".$order['isPayed']."' WHERE r_id ='".$rId."'"; 
+	if($order['isPayed'] == 0) $order['paidDatum'] = "";
+	$sqlUpdate = "UPDATE a_invoice SET isPayed = '".$order['isPayed']."', paidDatum = '".$order['paidDatum']."' WHERE r_id ='".$rId."'"; 
 	$result = $thisDb->dbUpdate($sqlUpdate);
-	
 
 	// update customer in orders //
 	$sqlUpdate = "UPDATE orders SET k_id = '".$order['k_id']."' WHERE o_id IN (SELECT o_id FROM a_invoice WHERE r_id = '".$rId."' )";
@@ -647,7 +647,7 @@ function dbQueryPurInvoices($timefrom, $timeto, $sId, $sPay)
 		if ($sId != NULL && $sId != "")
 			$sqlQuery = "SELECT * FROM a_purs WHERE date>='".$timefrom." 00:00:00' AND date<='".$timeto." 23:59:59' AND s_id='".$sId."'".$where." ORDER BY date DESC";	
 		else
-			$sqlQuery = "SELECT * FROM a_purs WHERE date>='".$timefrom." 00:00:00' AND date<='".$timeto." 23:59:59' ".$where." ORDER BY date DESC";
+			$sqlQuery = "SELECT * FROM a_purs WHERE date>='".$timefrom." 00:00:00' AND date<='".$timeto." 23:59:59'".$where." ORDER BY date DESC";
 	}
 	else
 		$sqlQuery = "SELECT * FROM a_purs WHERE 1=1".$where;
@@ -662,10 +662,10 @@ function dbCreatePurInvoice($pur, $puritems)
 {
 	$thisDb = new myDatabase($_SESSION['uDb']);
 	$sqlInsert = 
-			"INSERT INTO a_purs(p_id, s_id, u_id, date, count_sum, cost_sum, total_sum, discount, fee, tax, payment, isPayed)
+			"INSERT INTO a_purs(p_id, s_id, u_id, date, count_sum, cost_sum, total_sum, discount, fee, tax, payment, isPayed, paidDatum)
 			VALUES('".$pur['p_id']."','".$pur['s_id']."','".$_SESSION['uId']."','".$pur['date'].
 			"','".$pur['count_sum']."','".$pur['cost_sum']."','".$pur['total_sum'].
-			"','".$pur['discount']."','".$pur['fee']."','".$pur['tax']."','".$pur['payment']."','".$pur['isPayed']."')";				
+			"','".$pur['discount']."','".$pur['fee']."','".$pur['tax']."','".$pur['payment']."','".$pur['isPayed']."','".$pur['paidDatum']."')";				
 	$fId = $thisDb->dbInsertId($sqlInsert);
 	if ($fId <= 0)
 	{
