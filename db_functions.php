@@ -1139,14 +1139,15 @@ function dbGetCustomerCode()
 	return $thisNum;
 }
 
-function dbGetCustomerCodeByPrefix($prefix)
+function dbGetCustomerCodeByPrefix_old($prefix)
 {
 	$prefix = strtoupper($prefix);
 	$thisDb = new myDatabase($_SESSION['uDb']);
-	$sqlQuery = "SELECT k_code FROM customer WHERE k_code LIKE '".$prefix."%'";
+	$sqlQuery = "SELECT k_code FROM customer WHERE k_code LIKE '".$prefix."%' ORDER BY k_code ASC";
 	$result = $thisDb->dbQuery($sqlQuery);
 	if ($result <= 0)
 		return dbGetCustomerCode();
+
 	$max = 0;
 	for ($i=0; $i<count($result); $i++)
 	{
@@ -1157,6 +1158,41 @@ function dbGetCustomerCodeByPrefix($prefix)
 	}
 	$max++;
 	$codestr = $prefix.$max;
+	
+	return $codestr;
+}
+
+
+function dbGetCustomerCodeByPrefix($prefix)
+{
+	$prefix = strtoupper($prefix);
+	$thisDb = new myDatabase($_SESSION['uDb']);
+	$sqlQuery = "SELECT k_code FROM customer WHERE k_code LIKE '".$prefix."%' ORDER BY k_code ASC";
+	$result = $thisDb->dbQuery($sqlQuery);
+	if ($result <= 0)
+		return dbGetCustomerCode();
+
+	for ($i=0; $i<count($result); $i++){
+		$arr_code[] = intval("1".substr($result[$i]['k_code'], strlen($prefix)));
+	}
+	asort($arr_code);
+
+	for($max=0;;$max++){
+		$max_tmp = intval("1".$max);
+		$find_st = false;
+        $i = 0;
+		foreach ($arr_code AS $t){
+			if($max_tmp == $t){
+				$find_st = true;
+				break;
+			}
+			if($max_tmp < $t) break;
+ 			$i++;
+		}
+		if($i == count($arr_code)) break;
+        if($find_st == false) break;
+	}
+	$codestr = $prefix.substr($max_tmp,1);
 	
 	return $codestr;
 }
