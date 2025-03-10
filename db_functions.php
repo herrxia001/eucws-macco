@@ -1177,7 +1177,7 @@ function dbGetCustomerCodeByPrefix($prefix)
 	}
 	asort($arr_code);
 
-	for($max=0;;$max++){
+	for($max=1;;$max++){
 		$max_tmp = intval("1".$max);
 		$find_st = false;
         $i = 0;
