@@ -171,7 +171,7 @@ body {
         <div class="input-group-append">
             <div class="dropdown dropleft">
                 <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown"></button>
-                <ul class="dropdown-menu" id="typeList">
+                <ul class="dropdown-menu" id="seasonList">
                     <?php foreach($seasonArr AS $key => $value)
                         echo "<a class='dropdown-item' href='#' onclick='selSeason(this, ".$key.")'>".$value."</a>";
                     ?>
