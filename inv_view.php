@@ -75,7 +75,14 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 		$invType = 0;
 	}
 }
-
+if(isset($_GET['s_id']) && $_GET['s_id'] != ""){
+	foreach($mySuppliers AS $element){
+		if($element['s_id'] == $_GET['s_id']){
+			$mySName = $element['s_name'];
+			break;
+		}
+	}
+}
 ?>
 
 <!doctype html>
