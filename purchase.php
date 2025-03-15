@@ -1169,7 +1169,7 @@ function delDbPur() {
 	ADD NEW INVENTORY
 ************************************************************************/
 function newInv() {
-	var url = "inv_view.php?back=purchase&p_id="+pId;
+	var url = "inv_view.php?back=purchase&p_id="+pId+"&s_id="+pur['s_id'];
 	window.location.assign(url);
 }
 /************************************************************************
