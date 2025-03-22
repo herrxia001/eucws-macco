@@ -45,7 +45,7 @@ class myResource{
 		public $comColor 		= "颜色";
 		public $comCompany 		= "公司";
 		public $comCompProfile 	= "公司资料";
-		public $comCompCap			= array("名称","地址","邮编","城市","国家","电话","传真","手机","E-Mail","WhatsApp","Steuer Nr.","USt-IdNr.","IBAN","BIC","税率","网址");			
+		public $comCompCap			= array("名称","地址","邮编","城市","国家","电话","传真","手机","E-Mail","WhatsApp","Steuer Nr.","USt-IdNr.","IBAN","BIC","税率","网址","法院登记号","法人");			
 		public $comContact		= "联系人";
 		public $comCost			= "成本";
 		public $comCountry		= "国家";
