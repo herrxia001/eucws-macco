@@ -89,7 +89,7 @@ function dbCheckInvoiceNo($inNo, $yr)
 	$result = $thisDb->dbQuery($sqlQuery);
 	$thisNo = $result[0]['invoice_no'];
 
-	if (stripos($_SESSION['uDb'],"emily") !== false || stripos($_SESSION['uDb'],"clva") !== false) {
+	/*if (stripos($_SESSION['uDb'],"emily") !== false || stripos($_SESSION['uDb'],"clva") !== false) {
 		if (strlen($inNo) <= 5)
 			return FALSE;
 		$newNo = substr($inNo, 5);
@@ -97,8 +97,8 @@ function dbCheckInvoiceNo($inNo, $yr)
 			return FALSE;
 		else
 			return $inNo;
-	}
-
+	}*/
+	$inNo = substr($inNo, 2);
 	if (intval($inNo) >= intval($thisNo) || intval($inNo) <= 0)
 		return FALSE;
 	
