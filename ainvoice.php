@@ -2802,7 +2802,7 @@ if (notZero(order['fee1'])) {
 /* PRINT */
 function printInvoice() {
 	var i = 0;
-	var src = "files/"+"<?php echo $_SESSION['uDb']; ?>"+"/logo.png";
+	var src = "files/"+"<?php echo $_SESSION['uDb']; ?>"+"/logo.png?<?= rand() ?>";
 	var header = '<html><head><style type="text/css" media="print">@page { size:A4; margin:0.8cm 0.8cm 0.8cm 1.5cm; }\</style></head><body>';
 	var footer = '</body></html>';	
 	var printout = header;
