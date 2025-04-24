@@ -3074,7 +3074,7 @@ function printInvoice() {
 	if (aOptions['printReklamation1'] && (order['pay_bank'] > 0 || order['pay_vorkasse'] > 0)) {
 		output += '<a style="font-size:9px;">'+
 					'* Bitte kontrollieren Sie die berechnete Menge sofort. Spätere Mengenreklamationen können nicht anerkannt werden. Reduzierte Ware ist vom Umtausch und Skonto ausgeschlossen.'+ 
-					' Im Falle der Rechnungsbegleichung per Überweisung bitten wir Sie, den fälligen Betrag innerhalb von 14 Tagen auf unser Konto bei der Sparkasse Neuss mit der IBAN DExx xxxx xxxx xxxx xxxx xx (BIC xxxxxxxxxx) zu überweisen. Wir bitten Sie, auf Ihrer Überweisung die Rechnungsnummer anzugeben.'+
+					' Im Falle der Rechnungsbegleichung per Überweisung bitten wir Sie, den fälligen Betrag innerhalb von 14 Tagen auf unser Konto bei der Sparkasse Neuss mit der IBAN '+company["iban"]+' (BIC '+company["bic"]+') zu überweisen. Wir bitten Sie, auf Ihrer Überweisung die Rechnungsnummer anzugeben.'+
 					'</a>';
 	}
 	
