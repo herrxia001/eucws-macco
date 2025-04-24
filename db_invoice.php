@@ -52,8 +52,10 @@ function dbGetInvoiceNo_2($rId)
 	{
 		$invoiceNo = $result[0]['invoice_no'];
 	}
-	if (stripos($_SESSION['uDb'],"emily") !== false || stripos($_SESSION['uDb'],"clva") !== false)
-		$invoiceNo = $yr."-".$invoiceNo;
+	if($invoiceNo < 10) $invoiceNo = "000".$invoiceNo;
+	else if($invoiceNo < 100) $invoiceNo = "00".$invoiceNo;
+	else if($invoiceNo < 1000) $invoiceNo = "0".$invoiceNo;
+	$invoiceNo = substr($yr,2,2).$invoiceNo;
 	
 	return $invoiceNo;
 }
