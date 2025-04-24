@@ -301,11 +301,11 @@ body {
 		<div class="modal-body">
 			<div class="input-group p-1">
 				<div class="input-group-prepend"><span class="input-group-text"  style="width:120px;"><?php echo $thisResource->comDiscountRate ?></span></div>
-				<input type="number" min="0" step="0.01" class="form-control" name="mdi_discount_rate" id="mdi_discount_rate">
+				<input type="number" min="0" step="0.01" class="form-control" name="mdi_discount_rate" id="mdi_discount_rate" oninput="displayDiscount()">
 			</div>	
 			<div class="input-group p-1">
 				<div class="input-group-prepend"><span class="input-group-text"  style="width:120px;"><?php echo $thisResource->comDiscountValue ?></span></div>
-				<input type="text" class="form-control" name="mdi_discount" id="mdi_discount" readonly>
+				<input type="text" class="form-control" name="mdi_discount" id="mdi_discount" oninput="changDis()">
 			</div>
 		</div>
 		<div class="modal-footer">
@@ -1304,6 +1304,17 @@ $modalOrderDis.on('shown.bs.modal', function () {
 function displayDis() {
 	var discount = parseFloat(order['price_sum'])*parseFloat(order['discount_rate'])/100;
 	document.getElementById("mdi_discount_rate").value = displayValue(order['discount_rate']);
+	document.getElementById("mdi_discount").value = discount.toFixed(2);
+}
+
+function changDis(){
+	var discount = document.getElementById("mdi_discount").value;
+	var discount_rate = (discount / parseFloat(order['price_sum'])) * 100;
+	document.getElementById("mdi_discount_rate").value = displayValue(discount_rate.toFixed(2));
+}
+function displayDiscount() {
+	var discount_rate = document.getElementById("mdi_discount_rate").value;
+	var discount = parseFloat(order['price_sum'])*discount_rate/100;
 	document.getElementById("mdi_discount").value = discount.toFixed(2);
 }
 
