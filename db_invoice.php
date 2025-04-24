@@ -27,8 +27,10 @@ writeLog("GET_IN invoice r_id=".$rId.", invoice_no=".$invoiceNo);
 	$sqlUpdate = "UPDATE a_in_no SET invoice_no = '".$newNo."' WHERE year ='".$yr."'";
     $thisDb->dbUpdate($sqlUpdate);	
 
-	if (stripos($_SESSION['uDb'],"emily") !== false || stripos($_SESSION['uDb'],"clva") !== false)
-		$invoiceNo = $yr."-".$invoiceNo;
+	if($invoiceNo < 10) $invoiceNo = "000".$invoiceNo;
+	else if($invoiceNo < 100) $invoiceNo = "00".$invoiceNo;
+	else if($invoiceNo < 1000) $invoiceNo = "0".$invoiceNo;
+	$invoiceNo = substr($yr,2,2).$invoiceNo;
 	
 	// update a_invoice
 	$sqlUpdate = "UPDATE a_invoice SET status='1', invoice_no='".$invoiceNo."' WHERE r_id='".$rId."'";
