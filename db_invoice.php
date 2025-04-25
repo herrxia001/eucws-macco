@@ -102,7 +102,7 @@ function dbCheckInvoiceNo($inNo, $yr)
 	$inNo = substr($inNo, 2);
 	if (intval($inNo) >= intval($thisNo) || intval($inNo) <= 0)
 		return FALSE;
-	
+	$inNo = intval($inNo);
 	if($inNo < 10) $inNo = "000".$inNo;
 	else if($inNo < 100) $inNo = "00".$inNo;
 	else if($inNo < 1000) $inNo = "0".$inNo;
