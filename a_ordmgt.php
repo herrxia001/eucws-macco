@@ -1110,18 +1110,18 @@ function getInvoiceHTML(orderItems) {
 			if (aOptions['printNoART'])
 				code += orderItems[i]['i_code'];
 			else
-				code += 'ART.'+orderItems[i]['i_code'];
+				code += orderItems[i]['i_code'];
 		} else {
 			if (opPrintNoName) {
 				if (aOptions['printNoART'])
 					code += orderItems[i]['ai_code'];
 				else
-					code += 'ART.'+orderItems[i]['ai_code'];
+					code += orderItems[i]['ai_code'];
 			} else {
 				if (aOptions['printNoART'])
 					code += orderItems[i]['a_name']+'&nbsp;'+orderItems[i]['ai_code'];
 				else
-					code += orderItems[i]['a_name']+'&nbsp;ART.'+orderItems[i]['ai_code'];
+					code += orderItems[i]['a_name']+'&nbsp;'+orderItems[i]['ai_code'];
 			}
 		}
 		if ((isCHECust(cust['ustno']) || opPrintNonEU) && orderItems[i]['note'] != null)
