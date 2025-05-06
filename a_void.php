@@ -594,6 +594,7 @@ function printInvoice() {
 	var header = '<html><head>';
 	header += '<style type="text/css" media="print">@page { size:A4; margin:0.8cm 0.8cm 0.8cm 1.5cm;}\</style>';
 	header += '</head><body background="void.jpg">';
+	header += '<img src="void.jpg" style="position: absolute; width: 100%; height: auto; top: 100px; left: 0px; z-index: -1;" />';
 	var footer = '</body></html>';	
 	var printout = header;
 	var output = "";
@@ -650,7 +651,7 @@ function printInvoice() {
 	// Title
 	output += '<table width="100%" style="border:1px solid #808080;" cellpadding="2" cellspacing="0">';
 	output += '<tr style="font-size:14px">';
-	output += '<td><h3>Rechnung</h3></td>';
+	output += '<td><h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3></td>';
 	output += '<td style="border-left:1px solid #808080;">Nr.:<br>&nbsp;&nbsp;&nbsp;&nbsp;'+order['invoice_no']+'</td>';
 	output += '<td style="border-left:1px solid #808080;">Datum:<br>&nbsp;&nbsp;&nbsp;&nbsp;'+convertDate(order['date'])+'</td>';
 	output += '<td style="border-left:1px solid #808080;">Kunden Nr.:<br>&nbsp;&nbsp;&nbsp;&nbsp;'+myCustomer["k_code"]+'</td>';
