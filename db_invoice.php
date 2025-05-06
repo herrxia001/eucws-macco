@@ -1081,7 +1081,11 @@ function voidToInvoice($order, $orderitems){
 	$thisDb = new myDatabase($_SESSION['uDb']);
 
 	$sqlInsert = 
-			"INSERT INTO a_invoice SELECT r_id, invoice_no, o_id, k_id, u_id, date, lieferdatum, 
+			"INSERT INTO a_invoice (r_id, invoice_no, o_id, k_id, u_id, date, lieferdatum, 
+				discount_rate, discount, fee1, fee2, fee3, fee4, fee5, tax_rate,
+				count_sum, price_sum, total_sum, net, paid_sum, due, 
+				pay_cash, pay_card, pay_bank, pay_check, pay_other, pay_paypal, pay_vorkasse,
+				note, profit, status) SELECT r_id, invoice_no, o_id, k_id, u_id, date, lieferdatum, 
 				discount_rate, discount, fee1, fee2, fee3, fee4, fee5, tax_rate,
 				count_sum, price_sum, total_sum, net, paid_sum, due, 
 				pay_cash, pay_card, pay_bank, pay_check, pay_other, pay_paypal, pay_vorkasse,
