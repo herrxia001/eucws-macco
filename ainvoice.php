@@ -602,14 +602,14 @@ body {
 	</div> <!-- end of container -->
 	</form>	<!-- end of form -->
 	<iframe id="printf" name="printf" style="display: none;"></iframe>
-<script src="js/sysfunc.js?<?= rand ?>"></script>
+<script src="js/sysfunc.js?<?= rand() ?>"></script>
 <script src="js/ajax.js"></script>
-<script src="js/autocomplete.js?<?= rand ?>"></script>	
-<script src="js/modalCustSearch.js?<?= rand ?>"></script>
-<script src="js/modalCust.js?<?= rand ?>"></script>
-<script src="js/aOptions.js?<?= rand ?>"></script>
+<script src="js/autocomplete.js?<?= rand() ?>"></script>	
+<script src="js/modalCustSearch.js?<?= rand() ?>"></script>
+<script src="js/modalCust.js?<?= rand() ?>"></script>
+<script src="js/aOptions.js?<?= rand() ?>"></script>
 <script src="js/qrcode.js"></script>
-<script src="js/html5-qrcode.min.js?<?= rand ?>"></script>
+<script src="js/html5-qrcode.min.js?<?= rand() ?>"></script>
 <script src="js/modalDel.js"></script>
 
 <script>
