@@ -661,7 +661,7 @@ $bodyHtml = $header . $bodyHtml;
 			$bodyHtml .=  $myCustomer["name1"].',&nbsp;';
 		$bodyHtml .=  $myCustomer["k_name"].',&nbsp;';
 		if ($myCustomer["address"] != null && $myCustomer["address"] != "")
-			$bodyHtml .=  myCustomer["address"].',&nbsp;';
+			$bodyHtml .=  $myCustomer["address"].',&nbsp;';
 		if ($myCustomer["post"] != null && $myCustomer["post"] != "")
 			$bodyHtml .=  $myCustomer["post"].',&nbsp;';
 		if ($myCustomer["city"] != null && $myCustomer["city"] != "")
