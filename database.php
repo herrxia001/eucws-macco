@@ -62,8 +62,8 @@ class myDatabase
 		if($result  < 0)
 			return -1;
 
-		//if($result->num_rows == 0)
-		//	return 0;
+		if($result->num_rows == 0)
+			return 0;
 		
 		$data= array();
 		while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC))
