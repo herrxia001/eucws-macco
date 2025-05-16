@@ -27,7 +27,7 @@ if($year >= 2023){
 	$invs_1 = dbQueryArtHist($year, "3");
 	$invs_2 = dbQueryArtHist($year, "6");
 	$invs_3 = dbQueryArtHist($year, "9");
-	for($i = 0; $i < count($invs); $i++){
+	if(is_array($invs))for($i = 0; $i < count($invs); $i++){
 
 		$invs[$i]['in_count'] += $invs_1[$i]['in_count'] + $invs_2[$i]['in_count'] + $invs_3[$i]['in_count'];
 		$invs[$i]['in_total'] += $invs_1[$i]['in_total'] + $invs_2[$i]['in_total'] + $invs_3[$i]['in_total'];
