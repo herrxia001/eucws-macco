@@ -260,7 +260,8 @@ $table.bootstrapTable({
 function displaySum(){
 	document.getElementById("itemCount").innerText = invoiceTotal;
 	document.getElementById("sumCount").innerText = countTotal;
-	document.getElementById("sumPrice").innerText = priceTotal.toFixed(2);
+	//document.getElementById("sumPrice").innerText = priceTotal.toFixed(2);
+	document.getElementById("sumPrice").innerText = (netTotal - fee1Total - taxTotal).toFixed(2);
 	document.getElementById("sumTax").innerText = taxTotal.toFixed(2);
 	document.getElementById("sumNet").innerText = netTotal.toFixed(2);
 	document.getElementById("sumFee1").innerText = fee1Total.toFixed(2);
