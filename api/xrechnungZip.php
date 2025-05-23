@@ -363,9 +363,9 @@ $bodyHtml .= '</tr></thead><tbody>';
 		if ($orderItems['i_id'] != "0") {
 			if ($orderItems['i_name'] != null && $orderItems['i_name'] != "")
 				$code .= $orderItems['i_name'].'&nbsp;';
-			$code .= 'ART.'.$orderItems['i_code'];
+			$code .= $orderItems['i_code'];
 		} else {
-			$code .= 'ART.'.$orderItems['ai_code'];
+			$code .= $orderItems['ai_code'];
 		}
 		if (isCHECust($myCustomer['ustno']) && $orderItems['note'] != null)
 			$code .= '&nbsp;'.$orderItems['note'];
