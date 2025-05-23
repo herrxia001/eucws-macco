@@ -1833,8 +1833,7 @@ function printForm() {
 			code += orderItems[i]['position']+'&nbsp;';
 		if (orderItems[i]['i_name'] != null && orderItems[i]['i_name'] != "")
 			code += orderItems[i]['i_name']+'&nbsp;';
-		//code += 'ART.'+orderItems[i]['i_code'];
-		code += orderItems[i]['i_code'];
+		code += 'ART.'+orderItems[i]['i_code']
 		if (orderItems[i]['color'] != null && orderItems[i]['color'] != "")
 			code += '&nbsp;'+orderItems[i]['color'];
 		output += '<tr style="font-size:12px; font-family:Arial">';
