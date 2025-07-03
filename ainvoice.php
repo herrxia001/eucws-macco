@@ -871,8 +871,14 @@ function displaySum() {
 	
 	document.getElementById("sumCount").innerHTML = order['count_sum'];
 	document.getElementById("sumPrice").innerHTML = order['price_sum'];
-	
-	document.getElementById("sumDiscountRate").innerHTML = order['discount_rate'];
+
+	var sum_without_discount = 0;
+	for (var i=0; i<orderItems.length; i++) {
+		sum_without_discount += parseFloat(orderItems[i]['price']) * parseFloat(orderItems[i]['real_count']);
+	}
+	var discount_all = sum_without_discount - sumPrice;
+	document.getElementById("sumDiscountRate").innerHTML = discount_all.toFixed(2);
+	//document.getElementById("sumDiscountRate").innerHTML = order['discount_rate'];
 	document.getElementById("sumFees").innerHTML = sumFees.toFixed(2);
 	document.getElementById("sumTotal").innerHTML = order['total_sum'];
 	
