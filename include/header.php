@@ -1,3 +1,7 @@
+<?php
+getValidDatumDiff();
+//if($_SESSION['validDay'] < 0) header("location: ./");
+?>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="">
@@ -58,6 +62,23 @@ input[type=number] {
 .display_none{
 	display: none !important;
 }
+<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] < 30) { ?>
+nav.bg-dark{
+	background-color: red !important;
+}
+nav.navbar.bg-dark:after{
+	content: "(还剩<?= $_SESSION['validDay'] ?>天)";
+    position: absolute;
+    color: white;
+    left: 100px;
+}
+nav.a_nav.navbar.bg-dark:after{
+	content: "(还剩<?= $_SESSION['validDay'] ?>天)";
+    position: absolute;
+    color: white;
+    left: 170px;
+}
+<?php } ?>
 </style>
 
 
