@@ -117,5 +117,22 @@ function writeLog($log)
 	
 	return true;
 }
+function getValidDatumDiff(){
+	global $root_db;
+	$thisDb = new myDatabase($root_db);
 
+	if($_SESSION['uId'] != ""){
+		$sqlQuery = "SELECT * FROM users WHERE u_id='".$_SESSION['uId']."'";
+		$userData = $thisDb->dbQuery($sqlQuery);
+		$_SESSION['validToDatum'] = $userData[0]['validToDatum'];
+	}
+	$_SESSION['validDay'] = "";
+	if($_SESSION['validToDatum'] != ""){
+		$startDate = date_create(date("Y-m-d"));
+		$endDate = date_create($_SESSION['validToDatum']);
+		$diff=date_diff($startDate,$endDate);
+		$days = intval($diff->format("%R%a"));
+		$_SESSION['validDay'] = $days;
+	}
+}
 ?>

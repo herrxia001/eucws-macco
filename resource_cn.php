@@ -301,7 +301,8 @@ public $rptSupOutValue				= "销售金额";
 // INVOICE
 public $anMsgNoNewInvoice				= "没有待处理的发票";
 
-
+public $comNoch = "还剩";
+public $comTag = "天";
 // cust_search.php
 public $fmCustSrchTitle		= '选择客户';
 public $fmCustSrchMsgChoose	= '请选择一个客户';
