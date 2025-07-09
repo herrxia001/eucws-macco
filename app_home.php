@@ -10,6 +10,7 @@ if(!$_SESSION['uId'])
 include_once 'resource_'.$_SESSION['uLanguage'].'.php';
 $thisResource = new myResource();
 $active[7] = "active";
+include_once 'db_functions.php';
 ?>
 
 <!doctype html>
