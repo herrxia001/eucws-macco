@@ -10,7 +10,7 @@ if(!$userData <= 0){
     $uDb = $userData[0]['u_db']; 
 
     $thisDb = new myDatabase($uDb);
-    $sql = "SELECT * FROM print LIMIT 10";
+    $sql = "SELECT p.*, i.price, i.comment FROM print p LEFT JOIN inventory i ON (p.code = i.code1) LIMIT 10";
     $printData = $thisDb->dbQuery($sql);
     foreach($printData AS $data){
         $element = array();
@@ -21,8 +21,8 @@ if(!$userData <= 0){
         $element['codeHeight'] = $data['codeHeight'];
         $element['fontSize'] = $data['fontSize'];
 
-        $element['label'] = $data['label'];
-        $element['label_2'] = $data['label_2'];
+        $element['label'] = $data['label']." ".$data['comment'];
+        $element['label_2'] = $data['label_2']." ".$data['price']."€";
         $element['code'] = $data['code'];
         $element['amount'] = $data['amount'];
 
