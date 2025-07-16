@@ -285,7 +285,7 @@ body {
 	<div class="row p-1">
 		<div class="col-12 col-sm-12 col-md-12 col-lg-8" style="border:1px solid lightgray;">
 		<?php for($i=0; $i<100; $i++){ ?>
-			<img id="image_<?php echo $i ?>" src="blank.jpg" style="object-fit: cover" width="60" height="80" class="mt-1 mb-1">
+			<img id="image_<?php echo $i ?>" src="blank.jpg" style="height: auto" width="60" height="80" class="mt-1 mb-1">
 			<input type="text" class="form-control" id="imageNo_<?php echo $i ?>" name="imageNo[]" value="" hidden>
 		<?php } ?>
 		</div>
@@ -302,7 +302,7 @@ body {
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 				</div>
 				<div class="modal-body" align="center">
-					<img id="mImage" src="" alt="image" style="border:1px dotted; object-fit: cover" width="300" height="400">
+					<img id="mImage" src="" alt="image" style="border:1px dotted; width: 100%; height: auto;">
 					<input type="text" class="form-control" id="mImageId" hidden>
 				</div>
 				<div class="modal-footer">
