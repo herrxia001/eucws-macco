@@ -376,7 +376,7 @@ function loadTable(){
             imgSrc = "blank.jpg";
 
 
-		imgStr = "<img width='60' height='80' style='object-fit: cover' src='"+imgSrc+"' >";
+		imgStr = "<img width='60' height='80' style='height: auto;' src='"+imgSrc+"' >";
 		if (invs[i]['unit'] == null || invs[i]['unit'] == "1") {
 			count = parseInt(invs[i]['count']);
 			countStr = count.toString();
