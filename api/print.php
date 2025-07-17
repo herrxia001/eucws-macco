@@ -10,7 +10,7 @@ if(!$userData <= 0){
     $uDb = $userData[0]['u_db']; 
 
     $thisDb = new myDatabase($uDb);
-    $sql = "SELECT p.*, i.price, i.comment FROM print p LEFT JOIN inventory i ON (p.code = i.code1) LIMIT 10";
+    $sql = "SELECT p.*, i.comment FROM print p LEFT JOIN inventory i ON (p.code = i.code1) LIMIT 10";
     $printData = $thisDb->dbQuery($sql);
     foreach($printData AS $data){
         $element = array();
@@ -20,6 +20,15 @@ if(!$userData <= 0){
         $element['codeWidth'] = $data['codeWidth'];
         $element['codeHeight'] = $data['codeHeight'];
         $element['fontSize'] = $data['fontSize'];
+
+        // get comment
+        if(is_null($data['comment'])){
+            $sql = "SELECT i.comment FROM inv_variant iv, inventory i WHERE iv.i_id = i.i_id AND iv.barcode = '".$data['code']."'";
+            $printData_2 = $thisDb->dbQuery($sql);
+            foreach($printData_2 AS $data_2){
+                $data['comment'] = $data_2['comment'];
+            }
+        }
 
         $element['label'] = $data['label']." ".$data['label_2'];
         if(is_null($data['comment'])) $element['label_2'] = "";
