@@ -21,11 +21,8 @@ if(!$userData <= 0){
         $element['codeHeight'] = $data['codeHeight'];
         $element['fontSize'] = $data['fontSize'];
 
-        $element['label'] = $data['label'];
-        if($data['label_2'] == "")
-            $element['label_2'] = $data['comment'];
-        else
-            $element['label_2'] = $data['label_2']." ".$data['comment'];
+        $element['label'] = $data['label']." ".$data['label_2'];
+        $element['label_2'] = $data['comment'];
         $element['code'] = $data['code'];
         $element['amount'] = $data['amount'];
 
