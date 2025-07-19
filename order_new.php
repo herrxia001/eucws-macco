@@ -214,6 +214,14 @@ body {
                 <input type="number" min="0" step="1" max="100" class="form-control" name="m_discount" id="m_discount" oninput="refreshSale();">
                 <div class="input-group-append"><span class="input-group-text" id="after_price"></span></div>
             </div>
+			<div class="p-1 input-group">
+				<div class="input-group-prepend"><span class="input-group-text">位置</span></div>
+				<input type="text" class="form-control" name="m_t_position" id="m_t_position" readonly style="background-color:white">
+            </div>
+			<div class="p-1 input-group">
+				<div class="input-group-prepend"><span class="input-group-text">备注</span></div>
+				<input type="text" class="form-control" name="m_hint" id="m_hint" readonly style="background-color:white">
+			</div>
 			</div>
 			<div class="col-4 p-1 align-self-center" align="center">
 				<label id="m_quantity" style="font-size:28px; font-weight:bold; color:green">1</label>
@@ -950,6 +958,9 @@ function searchCodeYes(invs) {
 	// set default value
     document.getElementById("m_price").value = thisItem['price'];
     document.getElementById("m_discount").value = "";
+	document.getElementById("m_t_position").value = thisItem['position'];
+	if(typeof thisItem['hint'] === "undefined") document.getElementById("m_hint").value = "";	
+	else document.getElementById("m_hint").value = thisItem['hint'];
     $("#after_price").text("");
     if(thisItem['discount'] > 0){
         document.getElementById("m_discount").value = parseInt(thisItem['discount']);
@@ -1104,6 +1115,9 @@ $table.on('click-row.bs.table', function (e, row, $element, field) {
 	document.getElementById("m_price").value = thisItem['price'];
 	document.getElementById("m_discount").value = thisItem['discount'];
 	document.getElementById("m_unit_str").innerText = "x"+thisItem['unit'];	
+	document.getElementById("m_t_position").value = thisItem['position'];
+	if(typeof thisItem['hint'] === "undefined") document.getElementById("m_hint").value = "";	
+	else document.getElementById("m_hint").value = thisItem['hint'];
 	refreshSale();
 	// Show 'delete'
 	document.getElementById("btnDel").style.display = "block";
