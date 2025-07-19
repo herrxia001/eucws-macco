@@ -247,10 +247,10 @@ function dbQueryInvVariants() {
 	$thisDb = new myDatabase($_SESSION['uDb']);
 //	$sqlQuery = "SELECT inv.*, variant.* FROM inventory AS inv, inv_variant AS variant WHERE variant.i_id=inv.i_id";
 if($_SESSION['uId'] == 6){
-	$sqlQuery = "SELECT t.t_name AS t_name, inv.i_id,inv.discount, inv.i_code, inv.i_name, inv.count, inv.unit, inv.price, inv.path, inv.m_no, inv.code1, inv.cost,
+	$sqlQuery = "SELECT inv.position,inv.comment AS hint,t.t_name AS t_name, inv.i_id,inv.discount, inv.i_code, inv.i_name, inv.count, inv.unit, inv.price, inv.path, inv.m_no, inv.code1, inv.cost,
 			var.iv_id,var.variant, var.amount, var.barcode, var.m_no AS im_no, var.size  FROM inventory AS inv LEFT JOIN inv_variant AS var ON var.i_id=inv.i_id LEFT JOIN types t ON t.t_id = inv.t_id WHERE inv.status='0' AND inv.count > 0";
 }else{
-	$sqlQuery = "SELECT t.t_name AS t_name, inv.i_id,inv.discount, inv.i_code, inv.i_name, inv.count, inv.unit, inv.price, inv.path, inv.m_no, inv.code1, inv.cost,
+	$sqlQuery = "SELECT inv.position,inv.comment AS hint, t.t_name AS t_name, inv.i_id,inv.discount, inv.i_code, inv.i_name, inv.count, inv.unit, inv.price, inv.path, inv.m_no, inv.code1, inv.cost,
 	var.iv_id,var.variant, var.amount, var.barcode, var.m_no AS im_no, var.size  FROM inventory AS inv LEFT JOIN inv_variant AS var ON var.i_id=inv.i_id  LEFT JOIN types t ON t.t_id = inv.t_id WHERE inv.status='0'";
 }
 //	$sqlQuery = "SELECT inv.i_code, inv.i_name, inv.count, inv.unit, inv.price, inv.path, inv.m_no, variant.* FROM inventory AS inv, inv_variant AS variant WHERE variant.i_id=inv.i_id";
@@ -1112,7 +1112,7 @@ function dbQueryOrderById($oId)
 function dbQueryOrderItems($oId)
 {	
 	$thisDb = new myDatabase($_SESSION['uDb']);
-	$sqlQuery = "SELECT items.*, invs.i_code, invs.i_name, invs.path, invs.m_no, invs.count AS old_count, invs.position, invs.color
+	$sqlQuery = "SELECT items.*, invs.i_code, invs.i_name, invs.path, invs.m_no, invs.count AS old_count,invs.comment AS hint, invs.position, invs.color
 					FROM order_items AS items, inventory AS invs WHERE items.o_id='".$oId."' and invs.i_id=items.i_id";
     $thisQuery = $thisDb->dbQuery($sqlQuery);
 	$thisDb->dbClose();
