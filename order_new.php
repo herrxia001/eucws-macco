@@ -1775,7 +1775,7 @@ function printForm() {
 		output = '<html><head><style type="text/css" media="print">@page { size:auto; margin:0.5cm 0.5cm 0.5cm 1cm; }\</style></head><body>';
 	} else if (/iPhone|iPad/i.test(navigator.userAgent)){
 //		output = '<html><head><style type="text/css" media="print">@page { size:auto; margin:0.8cm 0.8cm 0.8cm 1.5cm; }\</style></head><body>';
-		output = '<html><head><style type="text/css">body{margin:0.8cm 0.8cm 0.8cm 1.5cm;}</style></head><body>';
+		output = '<html><head><style type="text/css" media="print">body{margin:0.5cm 0.5cm 0.5cm 1cm;}</style></head><body>';
 	} else {
 		output = '<html><head><style type="text/css" media="print">@page { size:21.0cm 29.7cm; margin:0.8cm 0.8cm 0.8cm 1.5cm; }\</style></head><body>';
 	}
