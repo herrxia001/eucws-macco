@@ -36,10 +36,7 @@ img {
 	<br>
     <div class="container">
 		<div class="row">
-			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
-				<a href="set_password.php"><img class="mb-3" src="images/s_password.svg" alt="" width="80" height="80"></a>
-				<p><a class="btn btn-secondary" href="set_password.php" role="button" style="width:100px"><?php echo $thisResource->comPassMgt ?></a></p>
-			</div>
+			
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<a href="set_printlist.php"><img class="mb-3" src="images/s_company.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="clean.php" role="button" style="width:100px">资料清理</a></p>
@@ -53,16 +50,21 @@ img {
 				<p><a class="btn btn-secondary" href="set_print.php" role="button" style="width:100px">打印设置</a></p>
 			</div>
 			<?php if ($_SESSION['uRole'] == 0) { ?>
+				<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
+				<a href="set_password.php"><img class="mb-3" src="images/s_password.svg" alt="" width="80" height="80"></a>
+				<p><a class="btn btn-secondary" href="set_password.php" role="button" style="width:100px"><?php echo $thisResource->comPassMgt ?></a></p>
+			</div>
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<a href="set_company.php"><img class="mb-3" src="images/s_company.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="set_company.php" role="button" style="width:100px"><?php echo $thisResource->comCompProfile ?></a></p>
 			</div>
-<!--
+
+
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
-				<a href="set_user.php"><img class="mb-3" src="images/s_users.svg" alt="" width="80" height="80"></a>
-				<p><a class="btn btn-secondary" href="set_user.php" role="button" disabled></a></p>
+				<a href="set_sale_pwd.php"><img class="mb-3" src="images/s_users.svg" alt="" width="80" height="80"></a>
+				<p><a class="btn btn-secondary" href="set_sale_pwd.php" role="button"></a></p>
 			</div>
--->
+
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<a href="set_sys.php"><img class="mb-3" src="images/h_settings.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="set_sys.php" role="button" style="width:100px"><?php echo $thisResource->comOptions ?></a></p>
