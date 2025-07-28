@@ -1784,7 +1784,7 @@ function printForm() {
 	} else {
 		withHeader = true;
 		// Company
-		output += '<table width="100%" border="0" cellpadding="5" cellspacing="0">';
+		/*output += '<table width="100%" border="0" cellpadding="5" cellspacing="0">';
 		output += '<tr><td align="right">';
 		output += '<b style="font-size:12px">'+company["c_name"]+'</b><br>';
 		output += '<a style="font-size:12px">'+company["address"]+'&nbsp;'+company["post"]+'&nbsp;'+company["city"]+'</a><br>';
@@ -1798,7 +1798,7 @@ function printForm() {
 			output += '&nbsp;E-Mail:'+company["email"]+'</a><br>';
 		else
 			output += '<br>';
-		output += '</td></tr></table>';
+		output += '</td></tr></table>';*/
 		// Customer
 		output += '<table width="50%" border="1px dotted" cellpadding="2" cellspacing="0">';
 		output += '<tr><td align="left">';
@@ -1852,7 +1852,7 @@ function printForm() {
 			code += orderItems[i]['position']+'&nbsp;';
 		if (orderItems[i]['i_name'] != null && orderItems[i]['i_name'] != "")
 			code += orderItems[i]['i_name']+'&nbsp;';
-		code += 'ART.'+orderItems[i]['i_code']
+		code += 'ART.'+orderItems[i]['i_code']+'&nbsp;'+orderItems[i]['hint'];
 		if (orderItems[i]['color'] != null && orderItems[i]['color'] != "")
 			code += '&nbsp;'+orderItems[i]['color'];
 		output += '<tr style="font-size:12px; font-family:Arial">';
