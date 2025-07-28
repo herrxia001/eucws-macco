@@ -741,6 +741,8 @@ function loadOrderItems(result) {
 			dataStr = "<a style='font-weight:bold;'>"+orderItems[i]['i_code']+"</a><br>"+"<a >"+orderItems[i]['i_name']+"</a>";
 		else
 			dataStr = "<a style='font-weight:bold;'>"+orderItems[i]['i_code']+"</a>";
+		
+		dataStr += "<br><a>"+orderItems[i]['position']+"</a><br><a>"+orderItems[i]['hint']+"</a>";
 		if(orderItems[i]['m_no'] != null)
 			imgSrc = orderItems[i]['path']+"/"+orderItems[i]['i_id']+"_"+orderItems[i]['m_no']+".jpg";
 		else
@@ -1060,6 +1062,9 @@ function addItem(count, price, discount) {
 		dataStr = "<a style='font-weight:bold;'>"+thisItem['i_code']+"</a><br>"+"<a >"+thisItem['i_name']+"</a>";
 	else
 		dataStr = "<a style='font-weight:bold;'>"+thisItem['i_code']+"</a>";
+
+	dataStr += "<br><a>"+thisItem['position']+"</a><br><a>"+thisItem['hint']+"</a>";
+
 	if(thisItem['m_no'] != null)
 		imgSrc = thisItem['path']+"/"+thisItem['i_id']+"_"+thisItem['m_no']+".jpg";
 	else
