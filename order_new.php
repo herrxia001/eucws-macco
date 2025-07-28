@@ -1844,6 +1844,7 @@ function printForm() {
 	output += '<th style="border-left:1px solid #808080; border-bottom:1px solid #808080;" align="right">'+printRes['price']+'</th>';
 	output += '<th style="border-left:1px solid #808080; border-bottom:1px solid #808080;" align="right">'+printRes['subtotal']+'</th>';
 	output += '</tr></thead><tbody>';
+	var itemSumCount = 0;
 	for (i=0; i<itemCount; i++) {
 		var code = "";
 		var rabatt = "";
@@ -1857,12 +1858,30 @@ function printForm() {
 		if (orderItems[i]['i_name'] != null && orderItems[i]['i_name'] != "")
 			code += orderItems[i]['i_name']+'&nbsp;';
 		code += 'ART.'+orderItems[i]['i_code'];
-		if (orderItems[i]['hint'] != null && orderItems[i]['hint'] != "")
-			code += '&nbsp;'+orderItems[i]['hint'];
+		//if (orderItems[i]['hint'] != null && orderItems[i]['hint'] != "")
+		//	code += '&nbsp;'+orderItems[i]['hint'];
 		if (orderItems[i]['color'] != null && orderItems[i]['color'] != "")
 			code += '&nbsp;'+orderItems[i]['color'];
+		var colorVar = "";
+		var v_index = getVariantIndexById(orderItems[i]['i_id']);
+		if (v_index >= 0){
+			var mdvsVariantTmp = orderVariant[v_index];
+
+			for (var z=0; z<mdvsVariantTmp.length; z++) {
+				if(mdvsVariantTmp[z]['count'] == 0) continue;
+				colorVar += mdvsVariantTmp[z]['variant'] + "("+mdvsVariantTmp[z]['count']+") ";
+
+			}
+
+		}
+
 		output += '<tr style="font-size:12px; font-family:Arial">';
-		output += '<td style="padding:1px;">'+'&nbsp;&nbsp;'+code+rabatt+'</td>';
+		if(colorVar == "")
+			output += '<td style="padding:1px;">'+'&nbsp;&nbsp;'+code+rabatt+'</td>';
+		else{
+			output += '<td style="padding:1px;">'+'&nbsp;&nbsp;'+code+rabatt+'<br>'+colorVar+'</td>';
+			itemSumCount++;
+		}
 		if (orderItems[i]['unit'] == "1")
 			output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+orderItems[i]['count']+'&nbsp;</td>';	
 		else
@@ -1870,6 +1889,7 @@ function printForm() {
 		output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+priceStr+'</td>';
 		output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+orderItems[i]['subtotal']+'</td>';
 		output += '</tr>';
+		itemSumCount++;
 	}
 	output += '<tr><td align="center" style="font-size:12px; font-family:Arial; border-top:1px solid #808080;" colspan="5">==='+printRes['totalQuantity']+':&nbsp;'+order['count_sum']+'&nbsp;'+printRes['pieces']+'===</td></tr>';	
 	// Spacing
@@ -1889,7 +1909,7 @@ function printForm() {
 		else
 			var maxCount = 50;
 	}
-	for (i=0; i<maxCount-itemCount; i++) {
+	for (i=0; i<maxCount-itemSumCount; i++) {
 		output += '<tr><td style="padding:1px; font-size:12px; font-family:Arial" colspan="5">&nbsp;</td></tr>';
 	}
 	// Summary
