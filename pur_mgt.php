@@ -330,6 +330,8 @@ function loadTable(){
 			if(purs[i]['isPayed'] == 1) continue;
 		}
 
+		if(purs[i]['count_sum'] == 0) continue;
+
 		if(purs[i]['discount'] == null) purs[i]['discount'] = 0;
 		if(purs[i]['fee'] == null) purs[i]['fee'] = 0;
 		purs[i]['total_sum'] = (parseFloat(purs[i]['cost_sum']) * (100 - parseFloat(purs[i]['discount']))) / 100 + parseFloat(purs[i]['fee']);
