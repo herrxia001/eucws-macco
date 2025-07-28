@@ -1877,9 +1877,9 @@ function printForm() {
 
 		output += '<tr style="font-size:12px; font-family:Arial">';
 		if(colorVar == "")
-			output += '<td style="padding:1px;">'+'&nbsp;&nbsp;'+code+rabatt+'</td>';
+			output += '<td style="padding:1px; padding-left: 10px;">'+code+rabatt+'</td>';
 		else{
-			output += '<td style="padding:1px;">'+'&nbsp;&nbsp;'+code+rabatt+'<br>'+colorVar+'</td>';
+			output += '<td style="padding:1px; padding-left: 10px;">'+code+rabatt+'<br>'+colorVar+'</td>';
 			itemSumCount++;
 		}
 		if (orderItems[i]['unit'] == "1")
