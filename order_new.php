@@ -741,8 +741,10 @@ function loadOrderItems(result) {
 			dataStr = "<a style='font-weight:bold;'>"+orderItems[i]['i_code']+"</a><br>"+"<a >"+orderItems[i]['i_name']+"</a>";
 		else
 			dataStr = "<a style='font-weight:bold;'>"+orderItems[i]['i_code']+"</a>";
-		
-		dataStr += "<br><a>"+orderItems[i]['position']+"</a><br><a>"+orderItems[i]['hint']+"</a>";
+		if (orderItems[i]['position'] != null)
+			dataStr += "<br><a>"+orderItems[i]['position']+"</a>";
+		if (orderItems[i]['hint'] != null)
+			dataStr += "<br><a>"+orderItems[i]['hint']+"</a>";
 		if(orderItems[i]['m_no'] != null)
 			imgSrc = orderItems[i]['path']+"/"+orderItems[i]['i_id']+"_"+orderItems[i]['m_no']+".jpg";
 		else
@@ -1062,8 +1064,10 @@ function addItem(count, price, discount) {
 		dataStr = "<a style='font-weight:bold;'>"+thisItem['i_code']+"</a><br>"+"<a >"+thisItem['i_name']+"</a>";
 	else
 		dataStr = "<a style='font-weight:bold;'>"+thisItem['i_code']+"</a>";
-
-	dataStr += "<br><a>"+thisItem['position']+"</a><br><a>"+thisItem['hint']+"</a>";
+	if (thisItem['position'] != null)
+		dataStr += "<br><a>"+thisItem['position']+"</a>;
+	if (thisItem['hint'] != null)
+		dataStr += "<br><a>"+thisItem['hint']+"</a>";
 
 	if(thisItem['m_no'] != null)
 		imgSrc = thisItem['path']+"/"+thisItem['i_id']+"_"+thisItem['m_no']+".jpg";
@@ -1852,7 +1856,9 @@ function printForm() {
 			code += orderItems[i]['position']+'&nbsp;';
 		if (orderItems[i]['i_name'] != null && orderItems[i]['i_name'] != "")
 			code += orderItems[i]['i_name']+'&nbsp;';
-		code += 'ART.'+orderItems[i]['i_code']+'&nbsp;'+orderItems[i]['hint'];
+		code += 'ART.'+orderItems[i]['i_code'];
+		if (orderItems[i]['hint'] != null && orderItems[i]['hint'] != "")
+			code += '&nbsp;'+orderItems[i]['hint'];
 		if (orderItems[i]['color'] != null && orderItems[i]['color'] != "")
 			code += '&nbsp;'+orderItems[i]['color'];
 		output += '<tr style="font-size:12px; font-family:Arial">';
