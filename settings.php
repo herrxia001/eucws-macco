@@ -62,7 +62,7 @@ img {
 
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<a href="set_sale_pwd.php"><img class="mb-3" src="images/s_users.svg" alt="" width="80" height="80"></a>
-				<p><a class="btn btn-secondary" href="set_sale_pwd.php" role="button"></a></p>
+				<p><a class="btn btn-secondary" href="set_sale_pwd.php" role="button" style="width:100px">销售端密码更改</a></p>
 			</div>
 
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">

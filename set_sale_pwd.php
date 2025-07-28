@@ -61,19 +61,19 @@ body {
 	
 	<div class="row">
 		<div class="p-1 input-group col-12 col-sm-12 col-md-12 col-lg-8">
-			<div class="input-group-prepend"><span class="input-group-text" style="width:140px;">销售1(macco_sale_1)</span></div>
+			<div class="input-group-prepend"><span class="input-group-text" style="width:180px;">销售1 (macco_sale_1)</span></div>
 			<input class="form-control" id="sale_pwd_1" name="sale_pwd_1" value="" required>
 		</div>
 	</div>
 	<div class="row">
 		<div class="p-1 input-group col-12 col-sm-12 col-md-12 col-lg-8">
-			<div class="input-group-prepend"><span class="input-group-text" style="width:140px;">销售2(macco_sale_2)</span></div>
+			<div class="input-group-prepend"><span class="input-group-text" style="width:180px;">销售2 (macco_sale_2)</span></div>
 			<input class="form-control" id="sale_pwd_2" name="sale_pwd_2" value="" required>
 		</div>	
 	</div>		
 	<div class="row">
 		<div class="p-1 input-group col-12 col-sm-12 col-md-12 col-lg-8">
-			<div class="input-group-prepend"><span class="input-group-text" style="width:140px;">销售3(macco_sale_3)</span></div>
+			<div class="input-group-prepend"><span class="input-group-text" style="width:180px;">销售3 (macco_sale_3)</span></div>
 			<input class="form-control" id="sale_pwd_3" name="sale_pwd_3" value="" required>
 		</div>	
 	</div>	
