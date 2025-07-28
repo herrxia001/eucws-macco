@@ -1065,7 +1065,7 @@ function addItem(count, price, discount) {
 	else
 		dataStr = "<a style='font-weight:bold;'>"+thisItem['i_code']+"</a>";
 	if (thisItem['position'] != null)
-		dataStr += "<br><a>"+thisItem['position']+"</a>;
+		dataStr += "<br><a>"+thisItem['position']+"</a>";
 	if (thisItem['hint'] != null)
 		dataStr += "<br><a>"+thisItem['hint']+"</a>";
 
