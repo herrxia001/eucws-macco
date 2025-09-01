@@ -58,6 +58,24 @@
 		</ul>
 	</div>
 	
+<?php }else{ ?>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsMain" >
+		<span class="navbar-toggler-icon"></span>
+	</button>
+	<div class="collapse navbar-collapse" id="navbarsMain">
+		<ul class="navbar-nav ml-auto">
+			<li class="nav-item dropdown dropleft">
+				<a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+					<?php echo strtoupper($_SESSION['uLanguage']); ?></a>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="set_lan.php?lan=cn">中文</a>
+					<a class="dropdown-item" href="set_lan.php?lan=en">English</a>
+					<a class="dropdown-item" href="set_lan.php?lan=de">Deutsch</a>
+					<a class="dropdown-item" href="set_lan.php?lan=it">Italiano</a>
+				</div>
+			</li>
+		</ul>
+	</div>
 <?php } ?>
 
 </nav>
