@@ -1877,21 +1877,21 @@ function printForm() {
 
 		output += '<tr style="font-size:12px; font-family:Arial">';
 		if(colorVar == "")
-			output += '<td style="padding:1px; padding-left: 10px;">'+code+rabatt+'</td>';
+			output += '<td style="padding:1px; padding-left: 10px; border-bottom:1px solid #808080;">'+code+rabatt+'</td>';
 		else{
-			output += '<td style="padding:1px; padding-left: 10px;">'+code+rabatt+'<br>'+colorVar+'</td>';
+			output += '<td style="padding:1px; padding-left: 10px; border-bottom:1px solid #808080;">'+code+rabatt+'<br><span style="color: blue;">'+colorVar+'</span></td>';
 			itemSumCount++;
 		}
 		if (orderItems[i]['unit'] == "1")
-			output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+orderItems[i]['count']+'&nbsp;</td>';	
+			output += '<td style="padding:1px; border-left:1px solid #808080; border-bottom:1px solid #808080;" align="right">'+orderItems[i]['count']+'&nbsp;</td>';	
 		else
-			output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+orderItems[i]['count']+'&nbsp;(x'+orderItems[i]['unit']+')&nbsp;</td>';
-		output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+priceStr+'</td>';
-		output += '<td style="padding:1px; border-left:1px solid #808080;" align="right">'+orderItems[i]['subtotal']+'</td>';
+			output += '<td style="padding:1px; border-left:1px solid #808080; border-bottom:1px solid #808080;" align="right">'+orderItems[i]['count']+'&nbsp;(x'+orderItems[i]['unit']+')&nbsp;</td>';
+		output += '<td style="padding:1px; border-left:1px solid #808080; border-bottom:1px solid #808080;" align="right">'+priceStr+'</td>';
+		output += '<td style="padding:1px; border-left:1px solid #808080; border-bottom:1px solid #808080;" align="right">'+orderItems[i]['subtotal']+'</td>';
 		output += '</tr>';
 		itemSumCount++;
 	}
-	output += '<tr><td align="center" style="font-size:12px; font-family:Arial; border-top:1px solid #808080;" colspan="5">==='+printRes['totalQuantity']+':&nbsp;'+order['count_sum']+'&nbsp;'+printRes['pieces']+'===</td></tr>';	
+	output += '<tr><td align="center" style="font-size:12px; font-family:Arial; " colspan="5">==='+printRes['totalQuantity']+':&nbsp;'+order['count_sum']+'&nbsp;'+printRes['pieces']+'===</td></tr>';	
 	// Spacing
 	if (/Android/i.test(navigator.userAgent)) {
 		if (withHeader)
