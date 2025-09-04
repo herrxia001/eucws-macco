@@ -736,9 +736,9 @@ function pdfFile() {
 		else id_str += "," + orders[i].r_id;
 	}
 	console.log(id_str);
-	window.open("api/xrechnungZip.php?id_str="+id_str);
-	//modalPdf.modal();
-	//getOrderItems();		
+	//window.open("api/xrechnungZip.php?id_str="+id_str);
+	modalPdf.modal();
+	getOrderItems();		
 }
 
 function savePdf(invoiceHTML) {
