@@ -25,5 +25,8 @@
 }
 
 
-
+.autocomplete-items div:hover, .autocomplete-items div.autocomplete-active{
+    color: #fff;
+    background-color: #007bff;
+}
 
