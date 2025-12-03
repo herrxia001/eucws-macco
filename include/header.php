@@ -62,7 +62,7 @@ input[type=number] {
 .display_none{
 	display: none !important;
 }
-<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] < 30) { ?>
+<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] < 0) { ?>
 nav.bg-dark{
 	background-color: red !important;
 }

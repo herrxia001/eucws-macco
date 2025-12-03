@@ -67,7 +67,7 @@ img {
 				<a href="settings.php"><img class="mb-3" src="images/h_settings.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="settings.php" role="button" style="width:100px"><?php echo $thisResource->comSettings ?></a></p>
 			</div>
-			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 30) $font_color="color: red;"; ?>
+			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 0) $font_color="color: red;"; ?>
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<img class="mb-3" src="images/calandar.svg" alt="" width="80" height="80">
 				<div style="position: absolute;top: 30px;width: 100%;text-align: center;left: 0;right: 0;font-size: 27px;font-weight: bold; <?= $font_color ?>"><?= $_SESSION['validDay'] ?></div>
@@ -88,7 +88,7 @@ img {
 				<a href="logout.php"><img class="mb-3" src="images/s_logout.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="logout.php" role="button"><?php echo $thisResource->comLogout ?></a></p>
 			</div>
-			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 30) $font_color="color: red;"; ?>
+			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 0) $font_color="color: red;"; ?>
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<img class="mb-3" src="images/calandar.svg" alt="" width="80" height="80">
 				<div style="position: absolute;top: 30px;width: 100%;text-align: center;left: 0;right: 0;font-size: 27px;font-weight: bold; <?= $font_color ?>"><?= $_SESSION['validDay'] ?></div>
@@ -105,7 +105,7 @@ img {
 				<a href="logout.php"><img class="mb-3" src="images/s_logout.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="logout.php" role="button"><?php echo $thisResource->comLogout ?></a></p>
 			</div>
-			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 30) $font_color="color: red;"; ?>
+			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 0) $font_color="color: red;"; ?>
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<img class="mb-3" src="images/calandar.svg" alt="" width="80" height="80">
 				<div style="position: absolute;top: 30px;width: 100%;text-align: center;left: 0;right: 0;font-size: 27px;font-weight: bold; <?= $font_color ?>"><?= $_SESSION['validDay'] ?></div>
@@ -138,7 +138,7 @@ img {
 				<a href="logout.php"><img class="mb-3" src="images/s_logout.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="logout.php" role="button"><?php echo $thisResource->comLogout ?></a></p>
 			</div>
-			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 30) $font_color="color: red;"; ?>
+			<?php if($_SESSION['validDay'] != "" && $_SESSION['validDay'] > 0) $font_color="color: green;"; if($_SESSION['validDay'] < 0) $font_color="color: red;"; ?>
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<img class="mb-3" src="images/calandar.svg" alt="" width="80" height="80">
 				<div style="position: absolute;top: 30px;width: 100%;text-align: center;left: 0;right: 0;font-size: 27px;font-weight: bold; <?= $font_color ?>"><?= $_SESSION['validDay'] ?></div>

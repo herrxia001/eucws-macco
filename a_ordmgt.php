@@ -125,9 +125,10 @@ $thisResource = new myResource($_SESSION['uLanguage']);
 				<th class="p-1" data-field="idx_count" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">件数</th>
 				<th class="p-1" data-field="idx_total" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">税前金额</th>
 				<th class="p-1" data-field="idx_tax" data-width="5" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">MwSt.</th>
-				<th class="p-1" data-field="idx_net" data-width="15" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">税后金额</th>
-				<th class="p-1" data-field="idx_fee1" data-width="15" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">运费</th>
+				<th class="p-1" data-field="idx_net" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">税后金额</th>
+				<th class="p-1" data-field="idx_fee1" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">运费</th>
 				<th class="p-1" data-field="idx_paidDatum" data-width="10" data-width-unit="%" data-halign="center" data-align="right" data-sortable="true">付款时间</th>
+				<th class="p-1" data-field="idx_paidTyp" data-width="10" data-width-unit="%" data-halign="center" data-align="left" data-sortable="true">付款方式</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -297,6 +298,25 @@ function loadTable(){
 			inNo = "<a style='background-color:yellow;'>"+orders[i]['invoice_no']+"</a>";
 		orders[i]['k_name'] = getCustNameById(orders[i]['k_id']);
 		var tax = parseFloat(orders[i]['total_sum'])*parseFloat(orders[i]['tax_rate'])/100;
+		
+		var payTypTitle = "";
+		if(orders[i]['pay_bank'] != "0.00"){
+			payTypTitle = "Überweisung";
+		}else if(orders[i]['pay_bank'] != "0.00"){
+			payTypTitle = "Überweisung";
+		}else if(orders[i]['pay_card'] != "0.00"){
+			payTypTitle = "Karte";
+		}else if(orders[i]['pay_cash'] != "0.00"){
+			payTypTitle = "Bar";
+		}else if(orders[i]['pay_check'] != "0.00"){
+			payTypTitle = "Scheck";
+		}else if(orders[i]['pay_other'] != "0.00"){
+			payTypTitle = "Nachnahme";
+		}else if(orders[i]['pay_paypal'] != "0.00"){
+			payTypTitle = "PayPal";
+		}else if(orders[i]['pay_vorkasse'] != "0.00"){
+			payTypTitle = "Vorkasse";
+		}
 		rows.push({
 			id: orders[i]['r_id'],
 			idx_no: inNo,
@@ -307,7 +327,8 @@ function loadTable(){
 			idx_tax: tax.toFixed(2),
 			idx_net: orders[i]['net'],
 			idx_fee1: orders[i]['fee1'],
-			idx_paidDatum: orders[i]['paidDatum']
+			idx_paidDatum: orders[i]['paidDatum'],
+			idx_paidTyp: payTypTitle
 		});
 		invoiceTotal++;
 		countTotal += parseInt(orders[i]['count_sum']);
