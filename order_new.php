@@ -1909,6 +1909,7 @@ function printForm() {
 		else
 			var maxCount = 50;
 	}
+	maxCount -= 10;
 	for (i=0; i<maxCount-itemSumCount; i++) {
 		output += '<tr><td style="padding:1px; font-size:12px; font-family:Arial" colspan="5">&nbsp;</td></tr>';
 	}
