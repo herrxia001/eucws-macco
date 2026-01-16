@@ -46,12 +46,12 @@ if($_SERVER['REQUEST_METHOD'] == 'GET')
 	var tabID = sessionStorage.tabID ? 
             sessionStorage.tabID : 
             sessionStorage.tabID = Math.random();
-	if(tabID != '<?= $_SESSION['tabID'] ?>'){
+	/*if(tabID != '<?= $_SESSION['tabID'] ?>'){
 		if(confirm("页面已经打开,重新登入？"))
 			window.location.href = "alogin.php";
 		else
 			$("*").remove();
-	}
+	}*/
 	</script>
 </head>
 <style>

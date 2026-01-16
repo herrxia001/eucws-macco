@@ -5,6 +5,10 @@ session_start();
 if(!$_SESSION['uId'])
 	header("Location:alogin.php");
 
+header("location: a_neword_2.php");
+
+exit();
+
 include_once 'db_invoice.php';
 
 $myCompany = $_SESSION['myCompany'];
