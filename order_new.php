@@ -831,7 +831,7 @@ function displaySum(option) {
 //	document.getElementById("sumPaid").innerHTML = order['paid_sum'];
 	document.getElementById("sumDue").innerHTML = order['due'];
 	
-	//if (!option)
+	if (!option)
 		saveDbOrder();
 }
 // Submit order
