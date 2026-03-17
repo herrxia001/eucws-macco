@@ -1587,7 +1587,7 @@ function printInvoice() {
 		else
 			maxCount = maxCount - 2;
 	}
-	for (i=0; i<maxCount-itemCount; i++) {
+	for (i=0; i<maxCount-itemCount - 10; i++) {
 		output += '<tr><td style="padding:1px; font-size:12px; font-family:Arial" colspan="5">&nbsp;</td></tr>';
 	}
 	output += '</tbody></table>';
