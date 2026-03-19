@@ -442,7 +442,7 @@ $bodyHtml .= '</tr></thead><tbody>';
 		else
 			$maxCount = $maxCount - 2;
 	}
-	for ($t=0; $t<$maxCount-$i-3; $t++) {
+	for ($t=0; $t<$maxCount-$i-10; $t++) {
 		$bodyHtml .= '<tr><td style="padding:1px; font-size:12px;" colspan="5">&nbsp;</td></tr>';
 	}
 	$bodyHtml .= '</tbody></table>';
