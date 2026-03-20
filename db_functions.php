@@ -370,7 +370,7 @@ function dbInvAddCount($iId, $countAdd, $costAdd)
 	$result = $thisDb->dbUpdate($sqlUpdate);	
 	
 	// Add log
-	$log = initInvLog($inv, 1);
+	$log = initInvLog($inv, 51);
 	dbAddInvLog($log);
 	
 	// If batch, add pur_item
@@ -909,7 +909,7 @@ function dbDelOrderItemOne($orderitem)
 	$in['cost'] = $orderitem->cost;
 	$in['price'] = $orderitem->price;
 	$in['src_id'] = $orderitem->o_id;
-	$log = initInvLog($in, 2);
+	$log = initInvLog($in, 22);
 	dbAddInvLog($log);
 	
 	$thisDb->dbClose();
@@ -942,7 +942,7 @@ function dbUpdateOrderItemOne($orderitem, $option)
 		$in['cost'] = $orderitem->cost;
 		$in['price'] = $orderitem->price;
 		$in['src_id'] = $orderitem->o_id;
-		$log = initInvLog($in, 10);
+		$log = initInvLog($in, 100);
 		dbAddInvLog($log);
 	} else {
 		$sqlUpdate = "UPDATE order_items SET count=count-'".$orderitem->count."', price='".$orderitem->price.
@@ -963,7 +963,7 @@ function dbUpdateOrderItemOne($orderitem, $option)
 		$in['cost'] = $orderitem->cost;
 		$in['price'] = $orderitem->price;
 		$in['src_id'] = $orderitem->o_id;
-		$log = initInvLog($in, 2);
+		$log = initInvLog($in, 32);
 		dbAddInvLog($log);		
 	}
 	
@@ -1013,7 +1013,7 @@ writeLog("DELETE ORDER o_id=".$order['o_id']." k_id=".$order['k_id']." total=".$
 		$in['cost'] = $orderitems[$i]['cost'];
 		$in['price'] = $orderitems[$i]['price'];
 		$in['src_id'] = $orderitems[$i]['o_id'];
-		$log = initInvLog($in, 2);
+		$log = initInvLog($in, 42);
 		dbAddInvLog($log);
 	}
 	// Update inv_variant
@@ -1483,7 +1483,7 @@ function dbAddPurItemOne($puritem)
 	$costAdd = $puritem->cost;
 	$countAdd = $puritem->count;
 	$newCost = ($cost*$count + $costAdd*$countAdd)/($count + $countAdd);
-	$newCost = round($newCost, 2);
+	$newCost = round($newCost, 52);
 	$newCount = $count + $countAdd;
 	$newPrice = $puritem->price;
 	
@@ -1497,7 +1497,7 @@ function dbAddPurItemOne($puritem)
 	$in['cost'] = $puritem->cost;
 	$in['price'] = $puritem->price;
 	$in['src_id'] = $puritem->p_id;
-	$log = initInvLog($in, 1);
+	$log = initInvLog($in, 21);
 	dbAddInvLog($log);
 	
 	$thisDb->dbClose();
@@ -1601,7 +1601,7 @@ function dbDelPurItemOne($puritem)
 	$in['cost'] = $puritem->cost;
 	$in['price'] = $puritem->price;
 	$in['src_id'] = $puritem->p_id;
-	$log = initInvLog($in, 11);
+	$log = initInvLog($in, 111);
 	dbAddInvLog($log);
 	
 	$thisDb->dbClose();
@@ -1696,7 +1696,7 @@ writeLog("DELETE_PUR: s_id=".$pur['s_id']);
 		$in['cost'] = $puritems[$i]['cost'];
 		$in['price'] = $puritems[$i]['price'];
 		$in['src_id'] = $puritems[$i]['p_id'];
-		$log = initInvLog($in, 11);
+		$log = initInvLog($in, 112);
 		dbAddInvLog($log);
 	}
 	
