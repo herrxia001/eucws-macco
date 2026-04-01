@@ -333,7 +333,7 @@ function dbUpdateInvoiceItemOne($orderitem, $option)
 	if ($orderitem['i_id'] != "0" && $orderitem['i_id'] != "" && $orderitem['i_id'] != NULL)
 	{
 		if ($option == 1)
-			$sqlUpdate = "UPDATE a_in_items SET count=count-".$orderitem['count'].", price='".$orderitem['price']."', note='".$orderitem['note'].
+			$sqlUpdate = "UPDATE a_in_items SET count=count - ".$orderitem['count'].", price='".$orderitem['price']."', note='".$orderitem['note'].
 						"', discount='".$orderitem['discount']."' WHERE r_id='".$orderitem['r_id']."' AND i_id='".$orderitem['i_id']."'";
 		else
 			$sqlUpdate = "UPDATE a_in_items SET count=count+".$orderitem['count'].", price='".$orderitem['price']."', note='".$orderitem['note'].
@@ -342,7 +342,7 @@ function dbUpdateInvoiceItemOne($orderitem, $option)
 	else
 	{
 		if ($option == 1)
-			$sqlUpdate = "UPDATE a_in_items SET count=count-".$orderitem['count'].", price='".$orderitem['price'].
+			$sqlUpdate = "UPDATE a_in_items SET count=count - ".$orderitem['count'].", price='".$orderitem['price'].
 						"', discount='".$orderitem['discount']."' WHERE r_id='".$orderitem['r_id']."' AND ai_id='".$orderitem['ai_id']."'";
 		else
 			$sqlUpdate = "UPDATE a_in_items SET count=count+".$orderitem['count'].", price='".$orderitem['price'].
@@ -557,7 +557,7 @@ function dbUpdateArtByIid($orderitem, $option, $thisDb)
 	if ($option != 0)
 		$sqlUpdate = "UPDATE a_art SET count=count+".$real_count." WHERE a_id='".$aId."'";
 	else
-		$sqlUpdate = "UPDATE a_art SET count=count-".$real_count." WHERE a_id='".$aId."'";
+		$sqlUpdate = "UPDATE a_art SET count=count - ".$real_count." WHERE a_id='".$aId."'";
 	$result = $thisDb->dbUpdate($sqlUpdate);		
 	
 	return $aId;
@@ -578,7 +578,7 @@ writeLog($real_count);
 	if ($option != 0)
 		$sqlUpdate = "UPDATE a_art SET count=count+".$real_count." WHERE a_id='".$aId."'";
 	else
-		$sqlUpdate = "UPDATE a_art SET count=count-".$real_count." WHERE a_id='".$aId."'";
+		$sqlUpdate = "UPDATE a_art SET count=count - ".$real_count." WHERE a_id='".$aId."'";
 	$result = $thisDb->dbUpdate($sqlUpdate);		
 writeLog($sqlUpdate);	
 	return $aId;
@@ -740,7 +740,7 @@ function dbDeletePurInvoice($fId)
 			$newCost = 0;
 		else
 			$newCost = ($count*$cost - $real_count*$puritems[$i]['cost'])/($count -$real_count);
-		$sqlUpdate = "UPDATE a_art SET count=count-".$real_count.", cost='".$newCost."' WHERE a_id='".$puritems[$i]['a_id']."'";
+		$sqlUpdate = "UPDATE a_art SET count=count - ".$real_count.", cost='".$newCost."' WHERE a_id='".$puritems[$i]['a_id']."'";
 		$thisDb->dbUpdate($sqlUpdate);
 	}
 	
@@ -964,7 +964,7 @@ function dbUpdateRefundItemOne($orderitem, $option)
 	if ($orderitem['i_id'] != "0" && $orderitem['i_id'] != "" && $orderitem['i_id'] != NULL)
 	{
 		if ($option == 1)
-			$sqlUpdate = "UPDATE a_rf_items SET count=count-".$orderitem['count'].", price='".$orderitem['price']."', note='".$orderitem['note'].
+			$sqlUpdate = "UPDATE a_rf_items SET count=count - ".$orderitem['count'].", price='".$orderitem['price']."', note='".$orderitem['note'].
 						"' WHERE rf_id='".$orderitem['rf_id']."' AND i_id='".$orderitem['i_id']."'";
 		else
 			$sqlUpdate = "UPDATE a_rf_items SET count=count+".$orderitem['count'].", price='".$orderitem['price']."', note='".$orderitem['note'].
@@ -973,7 +973,7 @@ function dbUpdateRefundItemOne($orderitem, $option)
 	else
 	{
 		if ($option == 1)
-			$sqlUpdate = "UPDATE a_rf_items SET count=count-".$orderitem['count'].", price='".$orderitem['price']."', ai_code='".$orderitem['ai_code'].
+			$sqlUpdate = "UPDATE a_rf_items SET count=count - ".$orderitem['count'].", price='".$orderitem['price']."', ai_code='".$orderitem['ai_code'].
 						"' WHERE rf_id='".$orderitem['rf_id']."' AND ai_id='".$orderitem['ai_id']."'";
 		else
 			$sqlUpdate = "UPDATE a_rf_items SET count=count+".$orderitem['count'].", price='".$orderitem['price']."', ai_code='".$orderitem['ai_code'].

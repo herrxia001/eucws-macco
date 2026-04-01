@@ -869,7 +869,7 @@ function dbAddOrderItemOne($orderitem)
 		return FALSE;
 	}
 	// Update inventory
-	$sqlUpdate = "UPDATE inventory SET count=count-".$orderitem->count.", count_a=count_a-".$orderitem->count." WHERE i_id='".$orderitem->i_id."'";
+	$sqlUpdate = "UPDATE inventory SET count=count - ".$orderitem->count.", count_a=count_a - ".$orderitem->count." WHERE i_id='".$orderitem->i_id."'";
 	$thisDb->dbUpdate($sqlUpdate);		
 	// Add log to history
 	$in = array();
@@ -933,7 +933,7 @@ function dbUpdateOrderItemOne($orderitem, $option)
 			return FALSE;
 		}
 		// Update inventory
-		$sqlUpdate = "UPDATE inventory SET count=count-".$orderitem->count.", count_a=count_a-".$orderitem->count." WHERE i_id='".$orderitem->i_id."'";
+		$sqlUpdate = "UPDATE inventory SET count=count - ".$orderitem->count.", count_a=count_a - ".$orderitem->count." WHERE i_id='".$orderitem->i_id."'";
 		$thisDb->dbUpdate($sqlUpdate);		
 		// Add log to history
 		$in = array();
@@ -945,7 +945,7 @@ function dbUpdateOrderItemOne($orderitem, $option)
 		$log = initInvLog($in, 10);
 		dbAddInvLog($log);
 	} else {
-		$sqlUpdate = "UPDATE order_items SET count=count-'".$orderitem->count."', price='".$orderitem->price.
+		$sqlUpdate = "UPDATE order_items SET count=count - '".$orderitem->count."', price='".$orderitem->price.
 			"', discount='".$orderitem->discount."' WHERE o_id='".$orderitem->o_id."' AND i_id='".$orderitem->i_id."'";
 		$result = $thisDb->dbUpdate($sqlUpdate);
 		if ($result <= 0)
@@ -1550,7 +1550,7 @@ function dbUpdatePurItemOne($puritem, $option)
 	}
 	else
 	{
-		$sqlUpdate = "UPDATE pur_items SET count=count-".$puritem->count.", cost='".$puritem->cost."', price='".$puritem->price.
+		$sqlUpdate = "UPDATE pur_items SET count=count - ".$puritem->count.", cost='".$puritem->cost."', price='".$puritem->price.
 					"' WHERE p_id='".$puritem->p_id."' AND i_id='".$puritem->i_id."'";
 		$result = $thisDb->dbUpdate($sqlUpdate);
 		if ($result <= 0)
@@ -1559,7 +1559,7 @@ function dbUpdatePurItemOne($puritem, $option)
 			return FALSE;
 		}
 		// Update inventory
-		$sqlUpdate = "UPDATE inventory SET count=count-".$puritem->count.", count_a=count_a-".$puritem->count." WHERE i_id='".$puritem->i_id."'";
+		$sqlUpdate = "UPDATE inventory SET count=count - ".$puritem->count.", count_a=count_a - ".$puritem->count." WHERE i_id='".$puritem->i_id."'";
 		$thisDb->dbUpdate($sqlUpdate);		
 		// Add log to history
 		$in = array();
@@ -1591,7 +1591,7 @@ function dbDelPurItemOne($puritem)
 		return FALSE;
 	}
 	// Update inventory
-	$sqlUpdate = "UPDATE inventory SET count=count-".$puritem->count.", count_a=count_a-".$puritem->count.
+	$sqlUpdate = "UPDATE inventory SET count=count - ".$puritem->count.", count_a=count_a - ".$puritem->count.
 					", time_updated='".date('Y-m-d H:i:s')."' WHERE i_id='".$puritem->i_id."'";
 	$thisDb->dbUpdate($sqlUpdate);		
 	// Add log to history
@@ -1684,7 +1684,7 @@ writeLog("DELETE_PUR: s_id=".$pur['s_id']);
 	
 	for ($i=0; $i<count($puritems); $i++)
 	{
-		$sqlUpdate = "UPDATE inventory SET count=count-".$puritems[$i]['count'].", count_a=count_a-".$puritems[$i]['count'].
+		$sqlUpdate = "UPDATE inventory SET count=count - ".$puritems[$i]['count'].", count_a=count_a - ".$puritems[$i]['count'].
 						", cost='".$puritems[$i]['old_cost']."', price='".$puritems[$i]['old_price']."', time_updated='".date('Y-m-d H:i:s').
 						"' WHERE i_id='".$puritems[$i]['i_id']."'";
 		$thisDb->dbUpdate($sqlUpdate);	
@@ -1710,7 +1710,7 @@ writeLog("DELETE_PUR: s_id=".$pur['s_id']);
 	{
 		for ($j=0; $j<count($purvariants[$i]); $j++)
 		{
-			$sqlUpdate = "UPDATE inv_variant SET amount=amount-".$purvariants[$i][$j]['count']." WHERE iv_id='".$purvariants[$i][$j]['iv_id']."'";
+			$sqlUpdate = "UPDATE inv_variant SET amount=amount - ".$purvariants[$i][$j]['count']." WHERE iv_id='".$purvariants[$i][$j]['iv_id']."'";
 			$result = $thisDb->dbUpdate($sqlUpdate);
 		}
 	}
@@ -2152,7 +2152,7 @@ function dbDeletePurVariant($purvariant)
 		$sqlDelete = "DELETE FROM pur_variant WHERE i_id='".$purvariant[$i]['i_id']."' AND p_id='".$purvariant[$i]['p_id']."'";
 		$thisDb->dbUpdate($sqlDelete);
 		// update inv_variant
-		$sqlUpdate = "UPDATE inv_variant SET amount=amount-".$purvariant[$i]['count']." WHERE iv_id='".$purvariant[$i]['iv_id']."';";
+		$sqlUpdate = "UPDATE inv_variant SET amount=amount - ".$purvariant[$i]['count']." WHERE iv_id='".$purvariant[$i]['iv_id']."';";
 		$thisDb->dbUpdate($sqlUpdate);
 	}
 	$thisDb->dbClose();
@@ -2202,7 +2202,7 @@ function dbAddOrderVariant($ordervariant)
 			$vcount = "0";			
 		else
 			$vcount = $ordervariant[$i]['count'];
-		$sqlUpdate = "UPDATE inv_variant SET amount=amount-".$vcount." WHERE iv_id='".$ordervariant[$i]['iv_id']."'";
+		$sqlUpdate = "UPDATE inv_variant SET amount=amount - ".$vcount." WHERE iv_id='".$ordervariant[$i]['iv_id']."'";
 		$thisDb->dbUpdate($sqlUpdate);
 	}
 	
@@ -2228,7 +2228,7 @@ function dbUpdateOrderVariant($ordervariant)
 			"' WHERE i_id='".$ordervariant[$i]['i_id']."' AND o_id='".$ordervariant[$i]['o_id']."' AND iv_id='".$ordervariant[$i]['iv_id']."'";;
 		$thisDb->dbUpdate($sqlUpdate);
 		// update inv_variant
-		$sqlUpdate = "UPDATE inv_variant SET amount=amount-".$ordervariant[$i]['count_diff']." WHERE iv_id='".$ordervariant[$i]['iv_id']."'";
+		$sqlUpdate = "UPDATE inv_variant SET amount=amount - ".$ordervariant[$i]['count_diff']." WHERE iv_id='".$ordervariant[$i]['iv_id']."'";
 		$thisDb->dbUpdate($sqlUpdate);
 	}	
 	$thisDb->dbClose();
