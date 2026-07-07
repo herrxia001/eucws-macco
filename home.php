@@ -81,6 +81,10 @@ img {
 				<p><a class="btn btn-secondary" href="order_new.php?back=home" role="button"><?php echo $thisResource->comOrderNew ?></a></p>
 			</div>
 			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
+				<a href="purchase.php"><img class="mb-3" src="images/h_purchase.svg" alt="" width="80" height="80"></a>
+				<p><a class="btn btn-secondary" href="purchase.php" role="button" style="width:100px"><?php echo $thisResource->comPurchaseNew ?></a></p>
+			</div>
+			<div class="col-6 col-sm-6 col-md-3 col-lg-3 center">
 				<a href="order_mgt.php?back=home"><img class="mb-3" src="images/m_types.svg" alt="" width="80" height="80"></a>
 				<p><a class="btn btn-secondary" href="order_mgt.php?back=home" role="button"><?php echo $thisResource->comOrders ?></a></p>
 			</div>
