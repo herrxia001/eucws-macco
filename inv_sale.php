@@ -254,7 +254,11 @@ $active[2] = "active";
 						<div class="p-1 input-group">
 							<div class="input-group-prepend"><span class="input-group-text">折扣</span></div>
 							<input type="number" min="0" max="100" step="1" class="form-control" name="m_discount" id="m_discount" oninput="refreshSale();">
-							<div class="input-group-append"><span class="input-group-text" id="after_price"></span></div>
+							<!--div class="input-group-append"><span class="input-group-text" id="after_price"></span></div-->
+						</div>
+						<div class="p-1 input-group">
+							<div class="input-group-prepend"><span class="input-group-text">促销价</span></div>
+							<input type="number" min="0" step="0.01" class="form-control" name="after_price" id="after_price" oninput="refreshSale_2();">
 						</div>
 					</div>
 					<div class="col-4 p-1 align-self-center" align="center">
@@ -667,13 +671,25 @@ function afterSearchInvYes(result){
 	refreshSale();
 	$modalSale.modal();
 }
+
 function refreshSale(){
 	var price = $("#m_price").val();
 	var discount = $("#m_discount").val();
 	if(discount != ""){
-		$("#after_price").text((price*((100-discount)/100)).toFixed(2));
+		$("#after_price").val((price*((100-discount)/100)).toFixed(2));
 	}else{
-		$("#after_price").text(price);
+		$("#after_price").val(price);
+	}
+}
+
+function refreshSale_2(){
+	var price = $("#m_price").val();
+	var after_price = $("#after_price").val();
+
+	if(after_price != ""){
+		$("#m_discount").val((100 - (after_price / price)*100).toFixed(2));
+	}else{
+		$("#m_discount").val("");
 	}
 }
 function cancelSale(){
