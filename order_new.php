@@ -847,12 +847,12 @@ function submitOrder() {
 }
 // Cancel/close order
 function closeOrder() {
-	if (itemCount <= 0)
+	/*if (itemCount <= 0)
 		delDbOrder();
-	else {
+	else {*/
 		var url = "<?php echo $backPhp; ?>";
 		window.location.assign(url);
-	}
+	//}
 }
 // Find orderItems item by searching id
 function getItemIndexById(id) {
