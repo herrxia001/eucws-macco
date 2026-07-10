@@ -2208,7 +2208,7 @@ function changeTime() {
 	var now = new Date();
     var maxDate = now.toISOString().substring(0,10);
 	$('#mdet_datum').prop('max', maxDate);
-	$('#mdet_lieferdatum').prop('max', maxDate);
+	//$('#mdet_lieferdatum').prop('max', maxDate);
 	$modalEditTime.modal();	
 }
 
