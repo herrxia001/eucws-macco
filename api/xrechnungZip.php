@@ -330,8 +330,26 @@ $bodyHtml .= '</tr></thead><tbody>';
     $output .= '</rsm:ExchangedDocument>';
     $output .= '<rsm:SupplyChainTradeTransaction>';
 
-    $sql = "SELECT a_in_items.*, inventory.i_code, inventory.i_name, inventory.path, inventory.m_no FROM a_in_items,inventory  WHERE r_id = '".$order['r_id']."' AND a_in_items.i_id = inventory.i_id";
-    $a_in_items = $thisDb->dbQuery($sql);
+    //$sql = "SELECT a_in_items.*, inventory.i_code, inventory.i_name, inventory.path, inventory.m_no FROM a_in_items,inventory  WHERE r_id = '".$order['r_id']."' AND a_in_items.i_id = inventory.i_id";
+    //$a_in_items = $thisDb->dbQuery($sql);
+
+    $sqlQuery1 = "SELECT items.*, invs.i_code, invs.i_name, invs.path, invs.m_no, invs.unit
+					FROM a_in_items AS items, inventory AS invs WHERE items.r_id='".$order['r_id']."' and invs.i_id=items.i_id";
+    $thisQuery1 = $thisDb->dbQuery($sqlQuery1);
+	$sqlQuery2 = "SELECT items.*, arts.a_code, arts.a_name
+					FROM a_in_items AS items, a_art AS arts WHERE items.r_id='".$order['r_id']."' and arts.a_id=items.a_id AND items.i_id='0'";
+    $thisQuery2 = $thisDb->dbQuery($sqlQuery2);
+	$thisDb->dbClose();
+	
+	if ($thisQuery1 > 0 && $thisQuery2 > 0)
+		$result = array_merge($thisQuery1, $thisQuery2);
+	else if ($thisQuery2 > 0)
+		$result = $thisQuery2;
+	else
+		$result = $thisQuery1;
+    
+    $a_in_items = $result;
+
     $i=0;
     foreach($a_in_items AS $orderItems){
 
